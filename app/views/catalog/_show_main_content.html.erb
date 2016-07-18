@@ -1,0 +1,175 @@
+<%= render 'previous_next_doc' %>
+
+<% @page_title = t('blacklight.search.show.title', :document_title => document_show_html_title, :application_name => application_name).html_safe %>
+<% content_for(:head) { render_link_rel_alternates } %>
+
+<div id="document" class="document <%= render_document_class %>" itemscope  itemtype="<%= @document.itemtype %>">
+  <div id="doc_<%= @document.id.to_s.parameterize %>">
+  <%
+    p @document
+    recto_label = (@document['verso_title_1961_t'][0] == '--' ? '' : 'Recto ')
+
+  %>
+  <div class="row">
+    <div class="col-md-6"> <img class="text-center" src="http://placehold.it/400x500"></div>
+    <div class="col-md-6">
+      <dl class="dl-horizontal">
+        <dt><%="#{recto_label}Title"%></dt>
+        <dd><%=@document['recto_title_1961_t'][0]%></dd>
+        <% if @document['verso_title_1961_t'][0] != '--' %>
+          <dt>Verso Title</dt>
+          <dd><%=@document['verso_title_1961_t'][0]%></dd>
+        <% end %>
+        <% if !@document['author_1961_display_s'].blank? %>
+          <dt>Contributor</dt>
+          <dd><%=@document['author_1961_display_s']%></dd>
+        <% end %>
+        <% if !@document['bnc_1961_s'].blank? %>
+          <dt title="Berenson Catalogue Number" alt="Berenson Catalogue Number">Berenson Catalogue Number</dt>
+          <dd><%=@document['bnc_1961_s']%></dd>
+        <% end %>
+
+
+        <% if !@document['technique_recto_t'].blank?%>
+          <dt><%="#{recto_label}Technique"%></dt>
+          <dd>
+            <% @document['technique_recto_t'].each_with_index do |tech, index| %>
+              <a href="<%=@document['technique_recto_uri'][index]%>"><%=tech%></a>
+            <% end %>
+          </dd>
+        <% end %>
+
+        <% if !@document['technique_verso_t'].blank?%>
+          <dt><%="Verso Technique"%></dt>
+          <dd>
+            <% @document['technique_verso_t'].each_with_index do |tech, index| %>
+              <a href="<%=@document['technique_verso_uri'][index]%>"><%=tech%></a>
+            <% end %>
+          </dd>
+        <% end %>
+
+
+        <% if !@document['recto_note_1961_t'][0].blank? and @document['recto_note_1961_t'][0] != '--' %>
+          <dt><%="#{recto_label}Notes"%></dt>
+          <dd><%=@document['recto_note_1961_t'][0]%></dd>
+        <% end %>
+        <% if !@document['verso_note_1961_t'][0].blank? and @document['verso_note_1961_t'][0] != '--' %>
+          <dt><%="Verso Notes"%></dt>
+          <dd><%=@document['verso_note_1961_t'][0]%></dd>
+        <% end %>
+        <% if !@document['recto_note_1938_t'][0].blank? and @document['recto_note_1938_t'][0] != '--' %>
+          <dt><%="#{recto_label}Notes"%></dt>
+          <dd><%=@document['recto_note_1938_t'][0]%></dd>
+        <% end %>
+        <% if !@document['verso_note_1938_t'][0].blank? and @document['verso_note_1938_t'][0] != '--' %>
+          <dt><%="Verso Notes"%></dt>
+          <dd><%=@document['verso_note_1938_t'][0]%></dd>
+        <% end %>
+
+        <% if !@document['verso_figures_1961_t'].blank? %>
+          <% if !@document['recto_figures_1961_t'][0].blank? and @document['recto_figures_1961_t'][0] != '--' %>
+            <dt><%="#{recto_label}Figures"%></dt>
+            <dd><%=@document['recto_figures_1961_t'][0]%></dd>
+          <% end %>
+          <% if !@document['verso_figures_1961_t'][0].blank? and @document['verso_figures_1961_t'][0] != '--' %>
+            <dt><%="Verso Figures"%></dt>
+            <dd><%=@document['verso_figures_1961_t'][0]%></dd>
+          <% end %>
+        <% end %>
+
+
+      </dl>
+    </div>
+  </div>
+
+<br/>
+    <br/>
+    <div class="pagination-search-widgets"></div>
+    <h4>1938 Edition</h4>
+    <dl class="dl-horizontal">
+        <dt><%="#{recto_label}Title"%></dt>
+        <dd><%=@document['recto_title_1938_t'][0]%></dd>
+        <% if @document['verso_title_1938_t'][0] != '--' %>
+          <dt>Verso Title</dt>
+          <dd><%=@document['verso_title_1938_t'][0]%></dd>
+        <% end %>
+        <% if !@document['author_1938_display_s'].blank? %>
+          <dt>Contributor</dt>
+          <dd><%=@document['author_1938_display_s']%></dd>
+        <% end %>
+        <% if !@document['bnc_1938_s'].blank? %>
+          <dt title="Berenson Catalogue Number" alt="Berenson Catalogue Number">Berenson Catalogue Number</dt>
+          <dd><%=@document['bnc_1938_s']%></dd>
+        <% end %>
+
+        <% if !@document['recto_note_1938_t'][0].blank? and @document['recto_note_1938_t'][0] != '--' %>
+          <dt><%="#{recto_label}Notes"%></dt>
+          <dd><%=@document['recto_note_1938_t'][0]%></dd>
+        <% end %>
+        <% if !@document['verso_note_1938_t'][0].blank? and @document['verso_note_1938_t'][0] != '--' %>
+          <dt><%="Verso Notes"%></dt>
+          <dd><%=@document['verso_note_1938_t'][0]%></dd>
+        <% end %>
+
+        <% if !@document['verso_figures_1938_t'].blank? %>
+          <% if !@document['recto_figures_1938_t'][0].blank? and @document['recto_figures_1938_t'][0] != '--' %>
+            <dt><%="#{recto_label}Figures"%></dt>
+            <dd><%=@document['recto_figures_1938_t'][0]%></dd>
+          <% end %>
+          <% if !@document['verso_figures_1938_t'][0].blank? and @document['verso_figures_1938_t'][0] != '--' %>
+            <dt><%="Verso Figures"%></dt>
+            <dd><%=@document['verso_figures_1938_t'][0]%></dd>
+          <% end %>
+        <% end %>
+      </dl>
+    <div class="pagination-search-widgets"></div>
+
+    <h4>1903 Edition</h4>
+    <dl class="dl-horizontal">
+        <dt><%="#{recto_label}Title"%></dt>
+        <dd><%=@document['recto_title_1903_t'][0]%></dd>
+        <% if @document['verso_title_1903_t'][0] != '--' %>
+          <dt>Verso Title</dt>
+          <dd><%=@document['verso_title_1903_t'][0]%></dd>
+        <% end %>
+        <% if !@document['author_1903_display_s'].blank? %>
+          <dt>Contributor</dt>
+          <dd><%=@document['author_1903_display_s']%></dd>
+        <% end %>
+        <% if !@document['bnc_1903_s'].blank? %>
+          <dt title="Berenson Catalogue Number" alt="Berenson Catalogue Number">Berenson Catalogue Number</dt>
+          <dd><%=@document['bnc_1903_s']%></dd>
+        <% end %>
+
+        <% if !@document['recto_note_1903_t'][0].blank? and @document['recto_note_1903_t'][0] != '--' %>
+          <dt><%="#{recto_label}Notes"%></dt>
+          <dd><%=@document['recto_note_1903_t'][0]%></dd>
+        <% end %>
+        <% if !@document['verso_note_1903_t'][0].blank? and @document['verso_note_1903_t'][0] != '--' %>
+          <dt><%="Verso Notes"%></dt>
+          <dd><%=@document['verso_note_1903_t'][0]%></dd>
+        <% end %>
+
+        <% if !@document['verso_figures_1903_t'].blank? %>
+          <% if !@document['recto_figures_1903_t'][0].blank? and @document['recto_figures_1903_t'][0] != '--' %>
+            <dt><%="#{recto_label}Figures"%></dt>
+            <dd><%=@document['recto_figures_1903_t'][0]%></dd>
+          <% end %>
+          <% if !@document['verso_figures_1903_t'][0].blank? and @document['verso_figures_1903_t'][0] != '--' %>
+            <dt><%="Verso Figures"%></dt>
+            <dd><%=@document['verso_figures_1903_t'][0]%></dd>
+          <% end %>
+        <% end %>
+      </dl>
+
+  </div>
+</div>
+
+<% if @document.respond_to?(:export_as_openurl_ctx_kev) %>
+  <!--
+       // COinS, for Zotero among others.
+       // This document_partial_name(@document) business is not quite right,
+       // but has been there for a while.
+  -->
+  <span class="Z3988" title="<%= @document.export_as_openurl_ctx_kev(document_partial_name(@document)) %>"></span>
+<% end %>
