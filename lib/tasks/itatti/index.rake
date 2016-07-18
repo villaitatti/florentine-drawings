@@ -11,8 +11,8 @@ namespace :itatti do
   	years = ['1903','1938','1961']
   	# years = ['1961']
 
-	#endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
-	endpoint = 'http://192.168.1.129:9999/blazegraph/namespace/florentinedrawings/sparql/'
+	endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
+	#endpoint = 'http://192.168.1.129:9999/blazegraph/namespace/florentinedrawings/sparql/'
 
 
 	p "Droping index"
@@ -455,58 +455,14 @@ namespace :itatti do
 
 		# p doc
 	  	solr.add doc
-
-	  	# sleep(0.1)
+	  	solr.commit
+	  	sleep(0.1)
 
 	end
 
-	solr.commit
 
 
 
-	# objects.keys().each do |key|
-	#   	# solr.delete_by_id 1
-
-	#   	doc = {}
-	#   	doc[:id] = key.rpartition('/').last
-	#   	doc[:format] = "Berenson #{objects[key][:year]}"
-	#   	if !objects[key][:title_recto].nil?
-	#   		doc[:title_t] = objects[key][:title_recto]
-	#   		doc[:title_display] = objects[key][:title_recto]
-	#   	end
-	#   	if !objects[key][:title_verso].nil?
-	#   		doc[:subtitle_t] = objects[key][:title_verso]
-	#   		doc[:subtitle_display] = objects[key][:title_verso]
-	#   	end
-
-	#   	authorDisplay = ""
-	#   	authors = []
-	#   	objects[key][:creators].each do |creator|
-	#   		doc[:subject_topic_facet] = "#{creator[:name]}"
-	#   		authorDisplay = authorDisplay + "#{creator[:name]} #{creator[:role]} "
-	#   		authors << "#{creator[:name]}"
-	#   	end
-	#   	doc[:author_display] = authorDisplay.strip
-	#   	doc[:author_t] = authors
-
-
-
-
-
-	#   	count = count + 1
-	#   	p count
-
-	#   	# p doc
-	#   	solr.add doc
-	#   	# solr.add :id=>1, :title_display=>"WHATEVER", :title_t=>"test display",  :more_txt=>"Whatever", subtitle_display:"More stuff"
-	#   	# solr.commit
-	#   	# response = solr.get 'select', :params => {:q => '*:*'}
-	#    #  p Blacklight.connection_config[:url]
-	#    #  p response.to_s
-
-
-	# end
-	# solr.commit
 
 
   end
