@@ -73,6 +73,7 @@ class CatalogController < ApplicationController
     config.add_facet_field 'language_facet', label: 'Creator Role', limit: true
     config.add_facet_field 'edition_facet', label: 'Edition', limit: true
     config.add_facet_field 'technique_facet', label: 'Technique', limit: true
+    config.add_facet_field 'owner_facet', label: 'Owner', limit: true
 
     config.add_facet_field 'lc_1letter_facet', label: 'Call Number'
     config.add_facet_field 'subject_geo_facet', label: 'Region'

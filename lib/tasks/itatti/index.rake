@@ -9,10 +9,10 @@ namespace :itatti do
   task index: :environment do
 
   	years = ['1903','1938','1961']
-  	# years = ['1961']
+  	#years = ['1961']
 
 	endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
-	#endpoint = 'http://192.168.1.129:9999/blazegraph/namespace/florentinedrawings/sparql/'
+	# endpoint = 'http://192.168.1.129:9999/blazegraph/namespace/florentinedrawings/sparql/'
 
 
 	p "Droping index"
@@ -83,7 +83,9 @@ namespace :itatti do
 							:creator_school_of => [],
 							:creator_imitator_of => [],
 							:creator_dc => [],
-							:creator_all => []
+							:creator_all => [],
+							:page_number => '',
+							:current_former_owner => []
 						}
 
 					end
@@ -127,6 +129,11 @@ namespace :itatti do
 				if predicateObject[:p] == 'http://purl.org/dc/terms/creator'
 					objects[year][key][:creator_dc] << predicateObject[:o]
 					if !objects[year][key][:creator_all].include? predicateObject[:o];  objects[year][key][:creator_all] << predicateObject[:o] end
+				end
+
+				# page
+				if predicateObject[:p] == 'http://dbpedia.org/ontology/atPage'
+					objects[year][key][:page_number] = predicateObject[:o]
 				end
 
 				# find the two titles
@@ -184,8 +191,8 @@ namespace :itatti do
 							end
 						end
 					end
-
 				end
+
 			end
 		end
 
@@ -269,6 +276,9 @@ namespace :itatti do
 	# now do the enriched project data
 	triples = {}
 	responsesAAT = {}
+	museumData = {}
+	geoLabels = {}
+	geoParents = {}
 
 	query = "
 	  Select * WhERE {
@@ -323,7 +333,47 @@ namespace :itatti do
 				end
 			end
 		end
+
+		if aatUri.include? 'viaf.org'
+			triples[aatUri].each do |subTriple|
+				if !museumData.keys().include? aatUri
+					museumData[aatUri] = { :label => '', :geonames => '' }
+				end
+				if subTriple[:p] == 'http://www.w3.org/2000/01/rdf-schema#label'
+					museumData[aatUri][:label] = subTriple[:o]
+				end
+				if subTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P74_has_current_or_former_residence'
+					museumData[aatUri][:geonames] = subTriple[:o]
+				end
+			end
+
+		end
+
+		if aatUri.include? 'geonames.org'
+			triples[aatUri].each do |subTriple|
+				if subTriple[:p] == 'http://www.w3.org/2000/01/rdf-schema#label'
+					geoLabels[aatUri] = subTriple[:o]
+				end
+				if subTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P89_falls_within'
+					geoParents[aatUri] = subTriple[:o]
+				end
+			end
+		end
+
+		if aatUri.include? '/entity/'
+			triples[aatUri].each do |subTriple|
+				if !museumData.keys().include? aatUri
+					museumData[aatUri] = { :label => '', :geonames => '' }
+				end
+				if subTriple[:p] == 'http://www.w3.org/2000/01/rdf-schema#label'
+					museumData[aatUri][:label] = subTriple[:o]
+				end
+			end
+		end
+
+
 	end
+
 
 	# clean up the data to only what we want from AAT
 	responsesAAT.keys.each do |aatUri|
@@ -343,16 +393,21 @@ namespace :itatti do
 		responsesAAT[aatUri] = label
 	end
 
+
 	objectsTechnique = {}
+	museumLinks = {}
+	bmUri = {}
+	currentFormerOwner = {}
+	currentOwner = {}
 
 	triples.keys().each do |projectTriple|
 		if projectTriple.include? 'data.itatti.harvard.edu'
 			uri = "#{projectTriple.split('Berenson').first}Berenson"
-
 			if !objectsTechnique.include? uri
 				objectsTechnique[uri] = {:allTechniques => [], :rectoTechinque => [], :versoTechinque => [], :rectoTechinqueUri => [], :versoTechinqueUri => [] }
 			end
 			triples[projectTriple].each do |subTriple|
+				# techique
 				if subTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P32_used_general_technique' or subTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P126_employed'
 					subTriple[:o] = subTriple[:o].sub('http://http://','http://')
 					if projectTriple.include? 'verso'
@@ -367,11 +422,30 @@ namespace :itatti do
 					end
 				end
 
+				# museum link
+				if subTriple[:p] == 'http://schema.org/url'
+					museumLinks[uri] = subTriple[:o]
+				end
+				if subTriple[:p] == 'http://www.w3.org/2002/07/owl#sameAs' and subTriple[:o].include? 'britishmuseum.org'
+					bmUri[uri] = subTriple[:o]
+				end
+
+				# current/former owner
+				if subTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P51_has_former_or_current_owner'
+					if !currentFormerOwner.keys().include? uri
+						currentFormerOwner[uri] = []
+					end
+					currentFormerOwner[uri] << subTriple[:o]
+				end
+				if subTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P52_has_current_owner'
+					if !currentOwner.keys().include? uri
+						currentOwner[uri] = []
+					end
+					currentOwner[uri] << subTriple[:o]
+				end
+
 			end
-
 		end
-
-
 	end
 
 	counter = 0
@@ -381,11 +455,64 @@ namespace :itatti do
 	  	doc[:id] = uri.rpartition('/').last
 	  	doc[:language_facet] = []
 	  	doc[:edition_facet] = []
+	  	doc[:owner_facet] = []
 	  	doc[:technique_facet] = objectsTechnique[uri][:allTechniques]
 	  	doc[:technique_recto_t] = objectsTechnique[uri][:rectoTechinque]
 	  	doc[:technique_recto_uri] = objectsTechnique[uri][:rectoTechinqueUri]
 	  	doc[:technique_verso_t] = objectsTechnique[uri][:versoTechinque]
 	  	doc[:technique_verso_uri] = objectsTechnique[uri][:versoTechinqueUri]
+
+	  	if museumLinks.keys().include? uri
+	  		doc[:museum_url_s] = museumLinks[uri]
+	  	end
+
+	  	if bmUri.keys().include? uri
+	  		doc[:bm_uri_s] = bmUri[uri]
+	  	end
+
+	  	doc[:owners_label_t] = []
+	  	doc[:owners_uri_t] = []
+	  	doc[:owners_geo_label_t] = []
+	  	doc[:owners_geo_uri_t] = []
+
+	  	if currentOwner.keys().include? uri
+	  		currentOwner[uri].each do |owner|
+	  			if !museumData[owner].nil?
+	  				doc[:owners_label_t]  << museumData[owner][:label]
+	  				doc[:owners_uri_t]  << owner
+	  				doc[:owner_facet] << museumData[owner][:label]
+	  				if museumData[owner][:geonames] != ''
+	  					doc[:owners_geo_label_t] << geoLabels[museumData[owner][:geonames]]
+						doc[:owners_geo_uri_t] << museumData[owner][:geonames]
+	  				end
+	  			else
+	  				p "No label for #{owner}"
+	  			end
+	  		end
+	  	end
+
+
+	  	if currentFormerOwner.keys().include? uri
+	  		label = "unknown"
+	  		currentFormerOwner[uri].each do |owner|
+	  			if !museumData[owner].nil?
+	  				doc[:owners_label_t]  << museumData[owner][:label]
+	  				doc[:owners_uri_t]  << owner
+	  				doc[:owner_facet] << museumData[owner][:label]
+	  				if museumData[owner][:geonames] != ''
+	  					doc[:owners_geo_label_t] << geoLabels[museumData[owner][:geonames]]
+	  					doc[:owners_geo_uri_t] << museumData[owner][:geonames]
+	  				end
+	  			else
+	  				p "No label for #{owner}"
+	  			end
+	  		end
+	  	end
+
+
+
+
+
 
 	  	doc[:bcn_t] = []
 
@@ -416,6 +543,9 @@ namespace :itatti do
 	  			doc["recto_figures_#{year}_t"] = objects[year][uri][:figures_recto]
 
 	  			doc[:bcn_t] << objects[year][uri][:bcn]
+
+	  			doc["page_number_#{year}_s"] = objects[year][uri][:page_number]
+
 
 			  	authorDisplay = ""
 			  	objects[year][uri][:creators].each do |creator|
@@ -459,11 +589,7 @@ namespace :itatti do
 	  	sleep(0.1)
 
 	end
-
-
-
-
-
+	# solr.commit
 
   end
 end
