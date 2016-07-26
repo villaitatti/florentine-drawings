@@ -49,6 +49,7 @@
         <% end %>
 
 
+
         <% if !@document['recto_note_1961_t'][0].blank? and @document['recto_note_1961_t'][0] != '--' %>
           <dt><%="Berenson #{recto_label}Notes"%></dt>
           <dd><%=@document['recto_note_1961_t'][0]%></dd>
@@ -77,12 +78,25 @@
           <% end %>
         <% end %>
 
+        <% if !@document['owners_label_t'].blank?%>
+          <dt><%="Location"%></dt>
+          <dd>
+            <% @document['owners_label_t'].each_with_index do |tech, index| %>
+              <a href="<%=@document['owners_uri_t'][index]%>"><%=tech%></a>
+            <% end %>
+          </dd>
+        <% end %>
+        <% if !@document['museum_url_s'].blank?%>
+          <dt><%="Link"%></dt>
+          <dd><%=@document['museum_url_s']%></dd>
+        <% end %>
+
 
       </dl>
     </div>
   </div>
 
-<br/>
+    <br/>
     <br/>
     <div class="pagination-search-widgets"></div>
     <h4>1961 Edition</h4>
