@@ -72,6 +72,8 @@ namespace :itatti do
 							:bcn => '',
 							:title_verso => '--',
 							:title_recto => '--',
+							:title_verso_1938 => '--',
+							:title_recto_1938 => '--',
 							:id_verso => '--',
 							:id_recto => '--',
 							:note_verso => '--',
@@ -474,17 +476,21 @@ namespace :itatti do
 	  	doc[:owners_uri_t] = []
 	  	doc[:owners_geo_label_t] = []
 	  	doc[:owners_geo_uri_t] = []
+	  	doc[:owners_label_display] = ''
 
 	  	if currentOwner.keys().include? uri
 	  		currentOwner[uri].each do |owner|
 	  			if !museumData[owner].nil?
 	  				doc[:owners_label_t]  << museumData[owner][:label]
 	  				doc[:owners_uri_t]  << owner
-	  				doc[:owner_facet] << museumData[owner][:label]
+	  				ownern_location = ''
 	  				if museumData[owner][:geonames] != ''
 	  					doc[:owners_geo_label_t] << geoLabels[museumData[owner][:geonames]]
+	  					ownern_location = " (#{geoLabels[museumData[owner][:geonames]]})"
 						doc[:owners_geo_uri_t] << museumData[owner][:geonames]
 	  				end
+	  				doc[:owner_facet] << "#{museumData[owner][:label]}#{ownern_location}"
+
 	  			else
 	  				p "No label for #{owner}"
 	  			end
@@ -498,21 +504,26 @@ namespace :itatti do
 	  			if !museumData[owner].nil?
 	  				doc[:owners_label_t]  << museumData[owner][:label]
 	  				doc[:owners_uri_t]  << owner
-	  				doc[:owner_facet] << museumData[owner][:label]
+	  				ownern_location = ''
 	  				if museumData[owner][:geonames] != ''
 	  					doc[:owners_geo_label_t] << geoLabels[museumData[owner][:geonames]]
+	  					ownern_location = " (#{geoLabels[museumData[owner][:geonames]]})"
 	  					doc[:owners_geo_uri_t] << museumData[owner][:geonames]
 	  				end
+	  				doc[:owner_facet] << "#{museumData[owner][:label]}#{ownern_location}"
 	  			else
 	  				p "No label for #{owner}"
 	  			end
 	  		end
 	  	end
 
+	  	owners_combo_label_location = []
+	  	doc[:owners_label_t].zip(doc[:owners_geo_label_t]).each do |owner, location|
+	  		owners_combo_label_location << "#{owner} (#{location})"
 
+	  	end
 
-
-
+	  	doc[:owners_label_display] = owners_combo_label_location.join(", ")
 
 	  	doc[:bcn_t] = []
 
@@ -568,6 +579,14 @@ namespace :itatti do
   			doc[:title_display] = title
   		end
 
+	  	# use the 1938 title if it eixsts
+	  	if objects.keys().include? '1938'
+	  		title = ""
+	  		if objects['1938'][uri][:title_recto] != 'N/A'; title = objects['1938'][uri][:title_recto] end
+	  		if objects['1938'][uri][:title_verso] != 'N/A'; title = "#{title} / #{objects['1938'][uri][:title_verso]}".sub('/ --','').strip end
+  		   	doc[:subtitle_t] = title
+  			doc[:subtitle_display] = title
+  		end
 
   		if objects.keys().include? '1961'
 		  	authorDisplay = ""
@@ -589,7 +608,7 @@ namespace :itatti do
 	  	sleep(0.1)
 
 	end
-	# solr.commit
+	#solr.commit
 
   end
 end

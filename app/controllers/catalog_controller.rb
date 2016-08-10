@@ -69,11 +69,11 @@ class CatalogController < ApplicationController
 
     config.add_facet_field 'format', label: 'Format'
     config.add_facet_field 'pub_date', label: 'Publication Year', single: true
-    config.add_facet_field 'subject_topic_facet', label: 'Creators', limit: 20, index_range: 'A'..'Z'
-    config.add_facet_field 'language_facet', label: 'Creator Role', limit: true
+    config.add_facet_field 'subject_topic_facet', label: 'Artists', limit: 30, index_range: 'A'..'Z', sort: 'index'
+    config.add_facet_field 'language_facet', label: 'Artist Attribution', limit: true
     config.add_facet_field 'edition_facet', label: 'Edition', limit: true
     config.add_facet_field 'technique_facet', label: 'Technique', limit: true
-    config.add_facet_field 'owner_facet', label: 'Owner', limit: true
+    config.add_facet_field 'owner_facet', label: 'Location', limit: true
 
     config.add_facet_field 'lc_1letter_facet', label: 'Call Number'
     config.add_facet_field 'subject_geo_facet', label: 'Region'
@@ -96,10 +96,14 @@ class CatalogController < ApplicationController
     # solr fields to be displayed in the index (search results) view
     #   The ordering of the field names is the order of the display
     config.add_index_field 'title_display', label: 'Title'
-    config.add_index_field 'subtitle_display', label: 'Title'
+    config.add_index_field 'subtitle_display', label: 'English Title'
     config.add_index_field 'title_vern_display', label: 'Title'
-    config.add_index_field 'author_display', label: 'Creator'
-    config.add_index_field 'author_vern_display', label: 'Creator'
+    config.add_index_field 'author_display', label: 'Artist'
+    config.add_index_field 'author_vern_display', label: 'Artist'
+    config.add_index_field 'owners_label_display', label: 'Location'
+
+
+
     config.add_index_field 'format', label: 'Format'
     # config.add_index_field 'language_facet', label: 'Language'
     config.add_index_field 'published_display', label: 'Published'
@@ -111,8 +115,8 @@ class CatalogController < ApplicationController
     #   The ordering of the field names is the order of the display
     config.add_show_field 'bcn_t', label: 'Berenson Catalogue Number'
 
-    config.add_show_field 'author_display', label: 'Creator'
-    config.add_show_field 'author_vern_display', label: 'Creator'
+    config.add_show_field 'author_display', label: 'Artist'
+    config.add_show_field 'author_vern_display', label: 'Artist'
     config.add_show_field 'format', label: 'Format'
     config.add_show_field 'url_fulltext_display', label: 'URL'
     config.add_show_field 'url_suppl_display', label: 'More Information'
@@ -189,7 +193,7 @@ class CatalogController < ApplicationController
       }
     end
 
-    config.add_search_field('author') do |field|
+    config.add_search_field('author', label: 'Artist') do |field|
       field.solr_parameters = { :'spellcheck.dictionary' => 'author' }
       field.solr_local_parameters = {
         qf: '$author_qf',
@@ -200,14 +204,25 @@ class CatalogController < ApplicationController
     # Specifying a :qt only to show it's possible, and so our internal automated
     # tests can test it. In this case it's the same as
     # config[:default_solr_parameters][:qt], so isn't actually neccesary.
-    config.add_search_field('subject') do |field|
-      field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
-      field.qt = 'search'
+    config.add_search_field('Location') do |field|
+      field.solr_parameters = { :'spellcheck.dictionary' => 'location' }
       field.solr_local_parameters = {
-        qf: '$subject_qf',
-        pf: '$subject_pf'
+        qf: '$location_qf',
+        pf: '$location_pf'
       }
     end
+
+    # # Specifying a :qt only to show it's possible, and so our internal automated
+    # # tests can test it. In this case it's the same as
+    # # config[:default_solr_parameters][:qt], so isn't actually neccesary.
+    # config.add_search_field('subject') do |field|
+    #   field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
+    #   field.qt = 'search'
+    #   field.solr_local_parameters = {
+    #     qf: '$subject_qf',
+    #     pf: '$subject_pf'
+    #   }
+    # end
 
     # "sort results by" select (pulldown)
     # label in pulldown is followed by the name of the SOLR field to sort by and
