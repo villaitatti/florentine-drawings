@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/ubuntu/itatti-berenson-portal/
+cd /home/ubuntu/florentine-drawings/
 rails server --binding=0.0.0.0
