@@ -1,10 +1,10 @@
-# itatti-berenson-portal
+# Florenting Drawings
 Blacklight Rails app for the Itatti Berenson portal
 
 Make sure you have Ruby 2.2.0 and 4.2.6+ installed
 
 ```
-git clone https://github.com/villaitatti/florentinedrawings.git
+git clone https://github.com/villaitatti/florentine-drawings.git
 ```
 
 ```
