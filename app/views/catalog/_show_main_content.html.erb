@@ -14,27 +14,41 @@
     <div class="col-md-6"> <img class="text-center" src="http://placehold.it/400x500"></div>
     <div class="col-md-6">
       <dl class="dl-horizontal">
-        <dt><%="Berenson #{recto_label}Title"%></dt>
+        <dt><%="Berenson #{recto_label}Title (1961)"%></dt>
         <dd><%=@document['recto_title_1961_t'][0]%></dd>
         <% if @document['verso_title_1961_t'][0] != '--' %>
-          <dt>Berenson Verso Title</dt>
+          <dt>Berenson Verso Title (1961)</dt>
           <dd><%=@document['verso_title_1961_t'][0]%></dd>
         <% end %>
+
+        <% if !@document['recto_title_1938_t'][0].blank? %>
+          <dt><%="Berenson #{recto_label}Title (1938)"%></dt>
+          <dd><%=@document['recto_title_1938_t'][0]%></dd>
+          <% if @document['verso_title_1938_t'][0] != '--' %>
+            <dt>Berenson Verso Title (1938)</dt>
+            <dd><%=@document['verso_title_1938_t'][0]%></dd>
+          <% end %>
+          <% if !@document['author_1938_display_s'].blank? %>
+            <dt>Artist Attribution</dt>
+            <dd><%=@document['author_1938_display_s']%></dd>
+          <% end %>
+        <% end %>
+
         <% if !@document['author_1961_display_s'].blank? %>
-          <dt>Creator Attribution</dt>
+          <dt>Artist Attribution</dt>
           <dd><%=@document['author_1961_display_s']%></dd>
         <% end %>
-        <% if !@document['bnc_1961_s'].blank? %>
-          <dt title="Berenson Catalogue Number" alt="Berenson Catalogue Number">Berenson Catalogue Number</dt>
-          <dd><%=@document['bnc_1961_s']%></dd>
-        <% end %>
+
+
+
 
 
         <% if !@document['technique_recto_t'].blank?%>
           <dt><%="#{recto_label}Technique"%></dt>
           <dd>
             <% @document['technique_recto_t'].each_with_index do |tech, index| %>
-              <a href="<%=@document['technique_recto_uri'][index]%>"><%=tech%></a>
+              <a href="<%=@document['technique_recto_uri'][index]%>"><%=tech%><% if index%2 == 0 and @document['technique_recto_t'].size > 1  %>, <% end %></a>
+
             <% end %>
           </dd>
         <% end %>
@@ -49,23 +63,6 @@
         <% end %>
 
 
-
-        <% if !@document['recto_note_1961_t'][0].blank? and @document['recto_note_1961_t'][0] != '--' %>
-          <dt><%="Berenson #{recto_label}Notes"%></dt>
-          <dd><%=@document['recto_note_1961_t'][0]%></dd>
-        <% end %>
-        <% if !@document['verso_note_1961_t'][0].blank? and @document['verso_note_1961_t'][0] != '--' %>
-          <dt><%="Berenson Verso Notes"%></dt>
-          <dd><%=@document['verso_note_1961_t'][0]%></dd>
-        <% end %>
-        <% if !@document['recto_note_1938_t'][0].blank? and @document['recto_note_1938_t'][0] != '--' %>
-          <dt><%="Berenson #{recto_label}Notes"%></dt>
-          <dd><%=@document['recto_note_1938_t'][0]%></dd>
-        <% end %>
-        <% if !@document['verso_note_1938_t'][0].blank? and @document['verso_note_1938_t'][0] != '--' %>
-          <dt><%="Berenson Verso Notes"%></dt>
-          <dd><%=@document['verso_note_1938_t'][0]%></dd>
-        <% end %>
 
         <% if !@document['verso_figures_1961_t'].blank? %>
           <% if !@document['recto_figures_1961_t'][0].blank? and @document['recto_figures_1961_t'][0] != '--' %>
