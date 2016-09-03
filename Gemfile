@@ -27,6 +27,7 @@ gem 'blacklight', "~> 6.3.1"
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 gem 'rest-client'
 
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
