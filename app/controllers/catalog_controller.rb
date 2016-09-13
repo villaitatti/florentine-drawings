@@ -154,6 +154,17 @@ class CatalogController < ApplicationController
     config.add_show_field 'recto_figures_1938_t', label: 'Recto Figures (1938)'
     config.add_show_field 'recto_figures_1961_t', label: 'Recto Figures (1961)'
 
+    config.add_show_field 'image_page_display', label: '1903 Page Image'
+    config.add_show_field 'image_thumb_display', label: '1903 Thumb Image'
+    config.add_show_field 'image_plate_display', label: '1903 Plate IIIF Link'
+    config.add_show_field 'image_bm_display', label: 'British Museum Link'
+
+    config.add_show_field 'contributors_t', label: 'Contributors'
+    config.add_show_field 'contributors_alt_t', label: 'Contributors alt'
+    config.add_show_field 'contributors_ulan_t', label: 'ULAN Uri'
+
+
+
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
     #

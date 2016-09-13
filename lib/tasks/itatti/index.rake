@@ -12,7 +12,7 @@ namespace :itatti do
   	#years = ['1961']
 
 	endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
-	# endpoint = 'http://192.168.1.129:9999/blazegraph/namespace/florentinedrawings/sparql/'
+	#endpoint = 'http://192.168.1.129:9999/blazegraph/namespace/florentinedrawings/sparql/'
 
 
 	p "Droping index"
@@ -20,6 +20,8 @@ namespace :itatti do
  	solr.delete_by_query '*:*'
  	count = 0
 	objects = {}
+	images = {}
+	plates = {}
 	allUris = []
 
   	years.each do |year|
@@ -60,6 +62,7 @@ namespace :itatti do
 
 		# make an hash for each record, find the core uri
 		triples.keys().each do |key|
+
 			triples[key].each do |aTriple|
 				if aTriple[:p] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' and aTriple[:o] == 'http://www.cidoc-crm.org/cidoc-crm/E22_Man-Made_Object'
 					if not key.include? '/recto' and not key.include? '/verso'
@@ -92,7 +95,46 @@ namespace :itatti do
 
 					end
 				end
+
+				# page image from the 1903 version
+				if aTriple[:o] == 'Page image' or aTriple[:o] == 'Page thumbnail'
+					page_number = key[/([0-9]{3})\.jpg/,1]
+					if !page_number.nil?
+						page_number = page_number.to_i.to_s
+						if !images.include? page_number
+							images[page_number] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil}
+						end
+						if key.include? 'text200'
+							images[page_number][:thumbnail] = key
+						else
+							images[page_number][:page] = key
+						end
+
+					end
+				end
+
+				# the iiif plate url
+				if aTriple[:o].include? 'iiif.lib.harvard'
+					uri = key.split('/recto/')
+					if uri.size == 1
+						uri = key.split('/verso/')
+					end
+					uri = uri[0]
+					if !images.include? uri
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil}
+					end
+					images[uri][:iiif] = aTriple[:o]
+				end
+
+				#the plate id
+				#if aTriple[:o] == 'plate number'
+
+				#end
+
+
+
 			end
+
 		end
 
 		objects[year].keys().each do |key|
@@ -272,6 +314,7 @@ namespace :itatti do
 			end
 			objects[year][key][:creators] = creators
 		end
+
 	end
 
 
@@ -446,10 +489,19 @@ namespace :itatti do
 					currentOwner[uri] << subTriple[:o]
 				end
 
+				# the british museum image
+				if subTriple[:o].include? 'britishmuseum.org/collectionimages'
+					if !images.include? uri
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil}
+					end
+					images[uri][:bm] = subTriple[:o]
+				end
+
+
+
 			end
 		end
 	end
-
 	counter = 0
 	allUris.each do |uri|
 
@@ -477,6 +529,9 @@ namespace :itatti do
 	  	doc[:owners_geo_label_t] = []
 	  	doc[:owners_geo_uri_t] = []
 	  	doc[:owners_label_display] = ''
+	  	doc[:contributors_t] = []
+	  	doc[:contributors_alt_t] = []
+	  	doc[:contributors_ulan_t] = []
 
 	  	if currentOwner.keys().include? uri
 	  		currentOwner[uri].each do |owner|
@@ -534,6 +589,20 @@ namespace :itatti do
 
 	  	years.each do |year|
 
+	  		# add in the contrubtor for the data display and indexing
+	  		objects[year][uri][:creators].each do |c|
+	  			if !doc[:contributors_t].include? c[:name]
+	  				doc[:contributors_t] << c[:name]
+	  				if !c[:nameAlt].nil?
+	  					c[:nameAlt].each do |alt|
+		  					doc[:contributors_alt_t] << alt
+		  				end
+		  			end
+	  				doc[:contributors_ulan_t] << c[:uri]
+	  			end
+	  		end
+
+
 		  	# if doc[:id] == "0001491-Berenson"
 		  	# 	p objects[year][uri]
 		  	# end
@@ -557,6 +626,17 @@ namespace :itatti do
 
 	  			doc["page_number_#{year}_s"] = objects[year][uri][:page_number]
 
+	  			if year == '1903'
+		  			if images.include? objects[year][uri][:page_number]
+		  				doc[:image_thumb_display] = images[objects[year][uri][:page_number]][:thumbnail]
+		  				doc[:image_page_display] = images[objects[year][uri][:page_number]][:page]
+		  			end
+
+		  			if images.include? uri
+		  				doc[:image_plate_display] = images[uri][:iiif]
+		  				doc[:image_bm_display] = images[uri][:bm]
+		  			end
+		  		end
 
 			  	authorDisplay = ""
 			  	objects[year][uri][:creators].each do |creator|

@@ -11,7 +11,13 @@
 
   %>
   <div class="row">
-    <div class="col-md-6"> <img class="text-center" src="http://placehold.it/400x500"></div>
+
+    <% if !@document['image_page_display'].blank? %>
+      <div class="col-md-6">
+        <img class="text-center page-image" src="<%=@document['image_page_display'][0]%>">
+      </div>
+    <% end %>
+
     <div class="col-md-6">
       <dl class="dl-horizontal">
         <dt><%="Berenson #{recto_label}Title (1961)"%></dt>
@@ -30,13 +36,13 @@
           <% end %>
           <% if !@document['author_1938_display_s'].blank? %>
             <dt>Artist Attribution</dt>
-            <dd><%=@document['author_1938_display_s']%></dd>
+            <dd><a href="/?f%5Bsubject_topic_facet%5D%5B%5D=<%=@document['author_t'][0]%>"><%=@document['author_1938_display_s']%></a></dd>
           <% end %>
         <% end %>
 
         <% if !@document['author_1961_display_s'].blank? %>
           <dt>Artist Attribution</dt>
-          <dd><%=@document['author_1961_display_s']%></dd>
+          <dd><a href="/?f%5Bsubject_topic_facet%5D%5B%5D=<%=@document['author_t'][0]%>"><%=@document['author_1961_display_s']%></a></dd>
         <% end %>
 
 
@@ -47,8 +53,7 @@
           <dt><%="#{recto_label}Technique"%></dt>
           <dd>
             <% @document['technique_recto_t'].each_with_index do |tech, index| %>
-              <a href="<%=@document['technique_recto_uri'][index]%>"><%=tech%><% if index%2 == 0 and @document['technique_recto_t'].size > 1  %>, <% end %></a>
-
+              <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%><% if index%2 == 0 and @document['technique_recto_t'].size > 1  %>, <% end %></a>
             <% end %>
           </dd>
         <% end %>
@@ -57,7 +62,7 @@
           <dt><%="Verso Technique"%></dt>
           <dd>
             <% @document['technique_verso_t'].each_with_index do |tech, index| %>
-              <a href="<%=@document['technique_verso_uri'][index]%>"><%=tech%></a>
+              <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%></a>
             <% end %>
           </dd>
         <% end %>
@@ -78,8 +83,8 @@
         <% if !@document['owners_label_t'].blank?%>
           <dt><%="Location"%></dt>
           <dd>
-            <% @document['owners_label_t'].each_with_index do |tech, index| %>
-              <a href="<%=@document['owners_uri_t'][index]%>"><%=tech%></a>
+            <% @document['owners_label_t'].each_with_index do |label, index| %>
+              <%=label%><% if !@document['owners_geo_label_t'][index].nil? %>, <%=@document['owners_geo_label_t'][index]%><% end %>
             <% end %>
           </dd>
         <% end %>
@@ -92,6 +97,25 @@
       </dl>
     </div>
   </div>
+
+    <% if !@document['image_plate_display'].blank? or !@document['image_bm_display'].blank? %>
+      <div class="pagination-search-widgets"></div>
+      <div class="row">
+        <% if !@document['image_plate_display'].blank? %>
+          <div class="col-md-6">
+             <h3><a href="<%=@document['image_plate_display'][0]%>" target="_blank">View Plate</a></h3>
+          </div>
+        <% end %>
+        <% if !@document['image_bm_display'].blank? %>
+          <div class="col-md-6">
+            <img class="text-center page-image" src="<%=@document['image_bm_display'][0]%>"><br>
+            <div class="text-center"><span>Image from the British Museum</span></div>
+          </div>
+        <% end %>
+
+      </div>
+    <% end %>
+
 
     <br/>
     <br/>
@@ -223,6 +247,7 @@
       <% end %>
   </div>
 </div>
+
 
 <% if @document.respond_to?(:export_as_openurl_ctx_kev) %>
   <!--

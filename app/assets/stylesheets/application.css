@@ -39,10 +39,16 @@
     color: #333333 !important;
 }
 #header-navbar{
-height:75px;
-padding:5px;
-
+	height:75px;
+	padding:5px;
 }
 
+.document .page-image{
+	max-width: 375px;
+	height: auto;
+}
 
+.data-table{
+	font-size: 85%;
+}
 
