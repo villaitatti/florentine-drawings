@@ -1,5 +1,5 @@
 # Florenting Drawings
-Blacklight Rails app for the Itatti Berenson portal
+Blacklight Rails app for the Villa I Tatti Drawings of the Florentine Painters Catalog
 
 Make sure you have Ruby 2.2.0 and 4.2.6+ installed
 
