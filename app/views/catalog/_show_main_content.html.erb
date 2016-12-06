@@ -5,116 +5,236 @@
 
 <div id="document" class="document <%= render_document_class %>" itemscope  itemtype="<%= @document.itemtype %>">
   <div id="doc_<%= @document.id.to_s.parameterize %>">
-  <%
-    p @document
-    recto_label = (@document['verso_title_1961_t'][0] == '--' ? '' : 'Recto ')
+    <%
+      p @document
+      recto_label = (@document['verso_title_1961_t'][0] == '--' ? '' : 'Recto ')
 
-  %>
-  <div class="row">
+      image_list = []
+      p "-----"
 
-    <% if !@document['image_page_display'].blank? %>
-      <div class="col-md-6">
-        <img class="text-center page-image" src="<%=@document['image_page_display'][0]%>">
+      if !@document['image_plate_display'].nil?
+        image_list << {:image=>'/assets/temp_iiif.jpg', :alt => 'View IIIF image', :link => @document['image_plate_display'][0] }
+      end
+      if !@document['image_bm_display'].nil?
+        image_list << {:image=>@document['image_bm_display'][0], :alt => 'Image from British museum', :link => @document['image_bm_display'][0] }
+      end
+
+      if !@document['image_page_display'].nil?
+        image_list << {:image=>@document['image_page_display'][0], :alt => '', :link => @document['image_page_display'][0] }
+      end
+
+
+
+    %>
+
+    <div class="row">
+      <div class="col-md-5">
+
+        <% if image_list.size == 0 %>
+          <div class="thumbnail">
+            <img alt="No Image" src="" data-holder-rendered="true" style="height: 180px; width: 100%; display: block;">
+          </div>
+        <% else %>
+
+          <a href="<%=image_list[0][:link]%>" class="thumbnail">
+            <img alt="<%=image_list[0][:alt]%>" id="main-image" src="<%=image_list[0][:image]%>" data-holder-rendered="true" style="width: 100%; display: block;">
+          </a>
+
+
+          <div class="row">
+              <% image_list.each do |img| %>
+                <div class="col-xs-3 col-md-3">
+                  <a href="<%=img[:link]%>" class="thumbnail preview-thumbnail" data-src="<%=img[:image]%>">
+                    <img alt="<%=img[:alt]%>"   src="<%=img[:image]%>" data-holder-rendered="true" style="width: 50px; display: block;">
+                  </a>
+                </div>
+              <% end %>
+          </div>
+        <% end %>
       </div>
-    <% end %>
 
-    <div class="col-md-6">
-      <dl class="dl-horizontal">
-        <dt><%="Berenson #{recto_label}Title (1961)"%></dt>
-        <dd><%=@document['recto_title_1961_t'][0]%></dd>
-        <% if @document['verso_title_1961_t'][0] != '--' %>
-          <dt>Berenson Verso Title (1961)</dt>
-          <dd><%=@document['verso_title_1961_t'][0]%></dd>
-        <% end %>
+      <div class="col-md-7">
+       <dl class="dl-horizontal">
+          <dt><%="Inventory Number"%></dt>
+          <dd><%=@document['inventory_number_s']%></dd>
 
-        <% if !@document['recto_title_1938_t'][0].blank? %>
-          <dt><%="Berenson #{recto_label}Title (1938)"%></dt>
-          <dd><%=@document['recto_title_1938_t'][0]%></dd>
-          <% if @document['verso_title_1938_t'][0] != '--' %>
-            <dt>Berenson Verso Title (1938)</dt>
-            <dd><%=@document['verso_title_1938_t'][0]%></dd>
+          <dt><%="Berenson #{recto_label}Title (1961)"%></dt>
+          <dd><%=@document['recto_title_1961_t'][0]%></dd>
+          <% if @document['verso_title_1961_t'][0] != '--' %>
+            <dt>Berenson Verso Title (1961)</dt>
+            <dd><%=@document['verso_title_1961_t'][0]%></dd>
           <% end %>
-          <% if !@document['author_1938_display_s'].blank? %>
-            <dt>Artist Attribution</dt>
-            <dd><a href="/?f%5Bsubject_topic_facet%5D%5B%5D=<%=@document['author_t'][0]%>"><%=@document['author_1938_display_s']%></a></dd>
-          <% end %>
-        <% end %>
 
-        <% if !@document['author_1961_display_s'].blank? %>
-          <dt>Artist Attribution</dt>
-          <dd><a href="/?f%5Bsubject_topic_facet%5D%5B%5D=<%=@document['author_t'][0]%>"><%=@document['author_1961_display_s']%></a></dd>
-        <% end %>
-
-
-
-
-
-        <% if !@document['technique_recto_t'].blank?%>
-          <dt><%="#{recto_label}Technique"%></dt>
-          <dd>
-            <% @document['technique_recto_t'].each_with_index do |tech, index| %>
-              <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%><% if index%2 == 0 and @document['technique_recto_t'].size > 1  %>, <% end %></a>
+          <% if !@document['recto_title_1938_t'][0].blank? %>
+            <dt><%="Berenson #{recto_label}Title (1938)"%></dt>
+            <dd><%=@document['recto_title_1938_t'][0]%></dd>
+            <% if @document['verso_title_1938_t'][0] != '--' %>
+              <dt>Berenson Verso Title (1938)</dt>
+              <dd><%=@document['verso_title_1938_t'][0]%></dd>
             <% end %>
-          </dd>
-        <% end %>
-
-        <% if !@document['technique_verso_t'].blank?%>
-          <dt><%="Verso Technique"%></dt>
-          <dd>
-            <% @document['technique_verso_t'].each_with_index do |tech, index| %>
-              <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%></a>
+            <% if !@document['author_1938_display_s'].blank? %>
+              <dt>Artist Attribution</dt>
+              <dd><a href="/?f%5Bsubject_topic_facet%5D%5B%5D=<%=@document['author_t'][0]%>"><%=@document['author_1938_display_s']%></a></dd>
             <% end %>
-          </dd>
-        <% end %>
-
-
-
-        <% if !@document['verso_figures_1961_t'].blank? %>
-          <% if !@document['recto_figures_1961_t'][0].blank? and @document['recto_figures_1961_t'][0] != '--' %>
-            <dt><%="#{recto_label}Figures"%></dt>
-            <dd><%=@document['recto_figures_1961_t'][0]%></dd>
           <% end %>
-          <% if !@document['verso_figures_1961_t'][0].blank? and @document['verso_figures_1961_t'][0] != '--' %>
-            <dt><%="Verso Figures"%></dt>
-            <dd><%=@document['verso_figures_1961_t'][0]%></dd>
-          <% end %>
-        <% end %>
 
-        <% if !@document['owners_label_t'].blank?%>
-          <dt><%="Location"%></dt>
-          <dd>
-            <% @document['owners_label_t'].each_with_index do |label, index| %>
-              <%=label%><% if !@document['owners_geo_label_t'][index].nil? %>, <%=@document['owners_geo_label_t'][index]%><% end %>
+          <% if !@document['author_1961_display_s'].blank? %>
+            <% if @document['author_1938_display_s'] != @document['author_1961_display_s'] %>
+              <dt>Artist Attribution (1961)</dt>
+              <dd><a href="/?f%5Bsubject_topic_facet%5D%5B%5D=<%=@document['author_t'][0]%>"><%=@document['author_1961_display_s']%></a></dd>
             <% end %>
-          </dd>
-        <% end %>
-        <% if !@document['museum_url_s'].blank?%>
-          <dt><%="Link"%></dt>
-          <dd><%=@document['museum_url_s']%></dd>
-        <% end %>
+          <% end %>
 
 
-      </dl>
+
+
+
+          <% if !@document['technique_recto_t'].blank?%>
+            <dt><%="#{recto_label}Technique"%></dt>
+            <dd>
+              <% @document['technique_recto_t'].each_with_index do |tech, index| %>
+                <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%><% if index%2 == 0 and @document['technique_recto_t'].size > 1  %>, <% end %></a>
+              <% end %>
+            </dd>
+          <% end %>
+
+          <% if !@document['technique_verso_t'].blank?%>
+            <dt><%="Verso Technique"%></dt>
+            <dd>
+              <% @document['technique_verso_t'].each_with_index do |tech, index| %>
+                <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%></a>
+              <% end %>
+            </dd>
+          <% end %>
+
+
+
+          <% if !@document['verso_figures_1961_t'].blank? %>
+            <% if !@document['recto_figures_1961_t'][0].blank? and @document['recto_figures_1961_t'][0] != '--' %>
+              <dt><%="#{recto_label}Figures"%></dt>
+              <dd><%=@document['recto_figures_1961_t'][0]%></dd>
+            <% end %>
+            <% if !@document['verso_figures_1961_t'][0].blank? and @document['verso_figures_1961_t'][0] != '--' %>
+              <dt><%="Verso Figures"%></dt>
+              <dd><%=@document['verso_figures_1961_t'][0]%></dd>
+            <% end %>
+          <% end %>
+
+          <% if !@document['owners_label_t'].blank?%>
+            <dt><%="Location"%></dt>
+            <dd>
+              <% @document['owners_label_t'].each_with_index do |label, index| %>
+                <% if !@document['owners_geo_label_t'].blank? %>
+                  <%=label%><% if !@document['owners_geo_label_t'][index].nil? %> (<%=@document['owners_geo_label_t'][index]%>)<% end %> <% if !@document['bm_uri_s'].blank? %> <a href="<%=@document['bm_uri_s']%>">View Record</a><% end %>
+                <% end %>
+              <% end %>
+            </dd>
+          <% end %>
+          <% if !@document['museum_url_s'].blank?%>
+            <dt><%="Link"%></dt>
+            <dd><%=@document['museum_url_s']%></dd>
+          <% end %>
+
+          <% if !@document['page_number_1903_s'].blank?%>
+            <dt><%="1903 Page Number"%></dt>
+            <dd><%=@document['page_number_1903_s']%></dd>
+          <% end %>
+
+
+
+        </dl>
+
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+          </div>
+          <div class="col-md-6">
+
+            <table class="table table-striped data-table">
+            <thead>
+              <tr>
+                <th>Data Sources</th>
+              </tr>
+            </thead>
+
+
+              <tbody>
+                <tr>
+                  <td>I Tatti</td>
+                  <td><a href="http://data.itatti.harvard.edu/id/florentinedrawings/<%="#{@document['id']}"%>"><%="#{@document['id']}"%></a></td>
+                </tr>
+                <% if !@document["contributors_t"].nil?%>
+                  <% if @document["contributors_t"].size > 0%>
+                    <tr>
+                      <td>ULAN</td>
+                      <td>
+                      <% @document["contributors_t"].each_with_index do |name, index| %>
+
+                          <a href="<%=@document["contributors_ulan_t"][index]%>"><%=name%></a>&nbsp;
+
+                      <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+              <% end %>
+                <% if !@document["technique_recto_t"].nil? and !@document["technique_verso_t"].nil?%>
+                  <% if @document["technique_recto_t"].size > 0 or @document["technique_verso_t"].size > 0%>
+                    <tr>
+                      <td>AAT</td>
+                       <td>
+                      <% if !@document["technique_recto_t"].nil? %>
+
+                          <% @document["technique_recto_t"].each_with_index do |name, index| %>
+                              <a href="<%=@document["technique_recto_uri"][index]%>"><%=name%></a>&nbsp;
+
+                          <% end %>
+                    <% end %>
+                      <% if !@document["technique_verso_t"].nil? %>
+                        <% @document["technique_verso_t"].each_with_index do |name, index| %>
+                            <a href="<%=@document["technique_verso_uri"][index]%>"><%=name%></a>&nbsp;
+                        <% end %>
+                    <% end %>
+                     <td>
+                    </tr>
+                  <% end %>
+              <% end %>
+                <% if !@document["owners_label_t"].nil?%>
+                  <% if @document["owners_label_t"].size > 0%>
+                    <tr>
+                      <td>VIAF</td>
+                      <td>
+                      <% @document["owners_label_t"].each_with_index do |name, index| %>
+
+                          <a href="<%=@document["owners_uri_t"][index]%>"><%=name%></a>&nbsp;
+
+                      <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% end %>
+                <% if !@document["owners_geo_label_t"].nil?%>
+                  <% if @document["owners_geo_label_t"].size > 0%>
+                    <tr>
+                      <td>Geonames</td>
+                      <td>
+                      <% @document["owners_geo_label_t"].each_with_index do |name, index| %>
+
+                          <a href="<%=@document["owners_geo_uri_t"][index]%>"><%=name%></a>&nbsp;
+
+                      <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
     </div>
-  </div>
 
-    <% if !@document['image_plate_display'].blank? or !@document['image_bm_display'].blank? %>
-      <div class="pagination-search-widgets"></div>
-      <div class="row">
-        <% if !@document['image_plate_display'].blank? %>
-          <div class="col-md-6">
-             <h3><a href="<%=@document['image_plate_display'][0]%>" target="_blank">View Plate</a></h3>
-          </div>
-        <% end %>
-        <% if !@document['image_bm_display'].blank? %>
-          <div class="col-md-6">
-            <img class="text-center page-image" src="<%=@document['image_bm_display'][0]%>"><br>
-            <div class="text-center"><span>Image from the British Museum</span></div>
-          </div>
-        <% end %>
-
-      </div>
-    <% end %>
 
 
     <br/>

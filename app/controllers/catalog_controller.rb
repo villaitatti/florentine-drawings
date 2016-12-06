@@ -164,6 +164,8 @@ class CatalogController < ApplicationController
     config.add_show_field 'contributors_ulan_t', label: 'ULAN Uri'
 
 
+    config.add_show_field 'inventory_number', label: 'Inventory Number'
+
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields

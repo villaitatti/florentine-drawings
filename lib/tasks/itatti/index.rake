@@ -11,8 +11,8 @@ namespace :itatti do
   	years = ['1903','1938','1961']
   	#years = ['1961']
 
-	endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
-	#endpoint = 'http://192.168.1.129:9999/blazegraph/namespace/florentinedrawings/sparql/'
+	# endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
+	endpoint = 'http://192.168.1.2:9999/blazegraph/namespace/kb/sparql'
 
 
 	p "Droping index"
@@ -444,6 +444,7 @@ namespace :itatti do
 	bmUri = {}
 	currentFormerOwner = {}
 	currentOwner = {}
+	inventoryNumbers = {}
 
 	triples.keys().each do |projectTriple|
 		if projectTriple.include? 'data.itatti.harvard.edu'
@@ -497,11 +498,19 @@ namespace :itatti do
 					images[uri][:bm] = subTriple[:o]
 				end
 
+				if projectTriple.include? 'inventory_number' and subTriple[:p].include? 'http://www.w3.org/2000/01/rdf-schema#label'
+					if !inventoryNumbers.keys().include? uri
+						inventoryNumbers[uri] = []
+					end
+					inventoryNumbers[uri] << subTriple[:o]
+				end
+
 
 
 			end
 		end
 	end
+
 	counter = 0
 	allUris.each do |uri|
 
@@ -523,6 +532,11 @@ namespace :itatti do
 	  	if bmUri.keys().include? uri
 	  		doc[:bm_uri_s] = bmUri[uri]
 	  	end
+
+	  	if inventoryNumbers.keys().include? uri
+	  		doc[:inventory_number_s] = inventoryNumbers[uri][0]
+	  	end
+
 
 	  	doc[:owners_label_t] = []
 	  	doc[:owners_uri_t] = []
@@ -555,6 +569,8 @@ namespace :itatti do
 
 	  	if currentFormerOwner.keys().include? uri
 	  		label = "unknown"
+	  		p currentFormerOwner[uri]
+	  		p currentOwner[uri]
 	  		currentFormerOwner[uri].each do |owner|
 	  			if !museumData[owner].nil?
 	  				doc[:owners_label_t]  << museumData[owner][:label]
@@ -684,11 +700,11 @@ namespace :itatti do
 
 		# p doc
 	  	solr.add doc
-	  	solr.commit
-	  	sleep(0.1)
+	  	#solr.commit
+	  	#sleep(0.1)
 
 	end
-	#solr.commit
+	solr.commit
 
   end
 end

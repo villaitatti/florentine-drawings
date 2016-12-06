@@ -10,10 +10,21 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
-//= require jquery_ujs
-//= require turbolinks//
+// = require jquery
+// = require jquery_ujs
+// = require turbolinks//
 // Required by Blacklight
-//= require blacklight/blacklight
+// = require blacklight/blacklight
 
-//= require_tree .
+// = require_tree .
+
+// switch the images out
+$(document).ready(function () {
+  $('.preview-thumbnail').click(function (event) {
+    var d = $(this).data('src')
+    console.log(d)
+    $('#main-image').attr('src', d)
+    event.preventDefault()
+    return false
+  })
+})
