@@ -341,7 +341,7 @@ namespace :itatti do
 			creatorsAdded = []
 
 			objects[year][key][:creator_carried_out_by].each do |uri|
-				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => '(Carried out by)'}; creatorsAdded << uri end
+				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => '(By)'}; creatorsAdded << uri end
 			end
 			objects[year][key][:creator_attributed_to].each do |uri|
 				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => '(Attributed to)'}; creatorsAdded << uri  end
@@ -353,7 +353,7 @@ namespace :itatti do
 				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => '(Imitator of)'}; creatorsAdded << uri  end
 			end
 			objects[year][key][:possibly_carried_out_by].each do |uri|
-				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => '(Possibly carried out by)'}; creatorsAdded << uri  end
+				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => '(Possibly by)'}; creatorsAdded << uri  end
 			end
 
 
