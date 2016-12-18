@@ -117,7 +117,7 @@
             <dt><%="#{recto_label}Technique"%></dt>
             <dd>
               <% @document['technique_recto_t'].each_with_index do |tech, index| %>
-                <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%><% if index%2 == 0 and @document['technique_recto_t'].size > 1  %>, <% end %></a>
+                <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%><% if index < @document['technique_recto_t'].size-1  %>, <% end %></a>
               <% end %>
             </dd>
           <% end %>
@@ -126,7 +126,7 @@
             <dt><%="Verso Technique"%></dt>
             <dd>
               <% @document['technique_verso_t'].each_with_index do |tech, index| %>
-                <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%></a>
+                <a href="/?f%5Btechnique_facet%5D%5B%5D=<%=tech%>"><%=tech%><% if index < @document['technique_verso_t'].size-1  %>, <% end %></a>
               <% end %>
             </dd>
           <% end %>
