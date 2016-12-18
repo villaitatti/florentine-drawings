@@ -60,8 +60,8 @@ namespace :itatti do
   	years = ['1903','1938','1961']
   	#years = ['1961']
 
-	#endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
-	endpoint = 'http://192.168.1.2:9999/blazegraph/namespace/kb/sparql'
+	endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql'
+	#endpoint = 'http://192.168.1.2:9999/blazegraph/namespace/kb/sparql'
 
 
 	p "Droping index"

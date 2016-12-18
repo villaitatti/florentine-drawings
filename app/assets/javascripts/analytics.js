@@ -1,4 +1,4 @@
-app/assets/javascripts/analytics.js
+// app/assets/javascripts/analytics.js
 
 $(document).on('page:change', function() {
  if (window._gaq != null) {

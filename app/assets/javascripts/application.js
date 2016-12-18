@@ -18,8 +18,10 @@
 
 // = require_tree .
 
-// switch the images out
+
 $(document).ready(function () {
+
+  // switch image/iiif viewer on thumbnail click on item page
   $('.preview-thumbnail').click(function (event) {
     var src = $(this).data('src')
     var iiif = $(this).data('iiif')
@@ -33,21 +35,17 @@ $(document).ready(function () {
     }
     $('#main-image').attr('src', src)
 
-
     event.preventDefault()
     return false
   })
 
-  if (iiifData){
-  	console.log("DOOING IT")
-
+  // init opensea dragon
+  if (window.iiifData){
     var viewer = OpenSeadragon({
         id: "openseadragon",
         prefixUrl: '/assets/openseadragon/',
 	    sequenceMode: true,
 	    tileSources: [iiifData]
-
-
     });
   }
 

@@ -1,6 +1,6 @@
 <% if !@document['image_plate_number_s'].blank? %>
   <script type="text/javascript">
-    var iiifData = 'http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_<%=@document['image_plate_number_s']%>.jpg/info.json'
+    window.iiifData = 'http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_<%=@document['image_plate_number_s']%>.jpg/info.json'
   </script>
 <% end %>
 
