@@ -69,7 +69,7 @@ class CatalogController < ApplicationController
 
     config.add_facet_field 'format', label: 'Format'
     config.add_facet_field 'pub_date', label: 'Publication Year', single: true
-    config.add_facet_field 'subject_topic_facet', label: 'Artists', limit: 30, index_range: 'A'..'Z', sort: 'index'
+    config.add_facet_field 'subject_topic_facet', label: 'Artist', limit: 30, index_range: 'A'..'Z', sort: 'index'
     config.add_facet_field 'language_facet', label: 'Artist Attribution', limit: true
     config.add_facet_field 'edition_facet', label: 'Edition', limit: true
     config.add_facet_field 'technique_facet', label: 'Technique', limit: true
