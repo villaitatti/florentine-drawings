@@ -136,6 +136,7 @@ namespace :itatti do
 							:creator_attributed_to => [],
 							:creator_school_of => [],
 							:creator_imitator_of => [],
+							:possibly_carried_out_by => [],
 							:creator_dc => [],
 							:creator_all => [],
 							:page_number => '',
@@ -229,6 +230,9 @@ namespace :itatti do
 							if !objects[year][key][:creator_all].include? st[:o]; objects[year][key][:creator_all] << st[:o] end
 						elsif st[:p] == 'http://data.itatti.harvard.edu/florentinedrawings/ontologies/carried_out_by_imitator_of'
 							objects[year][key][:creator_imitator_of] << st[:o]
+							if !objects[year][key][:creator_all].include? st[:o]; objects[year][key][:creator_all] << st[:o] end
+						elsif st[:p] == 'http://data.itatti.harvard.edu/florentinedrawings/ontologies/possibly_carried_out_by'
+							objects[year][key][:possibly_carried_out_by] << st[:o]
 							if !objects[year][key][:creator_all].include? st[:o]; objects[year][key][:creator_all] << st[:o] end
 						end
 					end
@@ -348,6 +352,11 @@ namespace :itatti do
 			objects[year][key][:creator_imitator_of].each do |uri|
 				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => '(Imitator of)'}; creatorsAdded << uri  end
 			end
+			objects[year][key][:possibly_carried_out_by].each do |uri|
+				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => '(Possibly carried out by)'}; creatorsAdded << uri  end
+			end
+
+
 			objects[year][key][:creator_dc].each do |uri|
 				if !creatorsAdded.include? uri; creators <<  {:uri => uri, :role => ''}; creatorsAdded << uri  end
 			end
