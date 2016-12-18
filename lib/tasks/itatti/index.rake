@@ -4,6 +4,55 @@ require 'json'
 include Blacklight
 
 
+class String
+  # recursive
+  def to_arabic(str = self, result = 0)
+    return result if str.empty?
+    roman_mapping.values.each do |roman|
+      if str.start_with?(roman)
+        result += roman_mapping.invert[roman]
+        str = str.slice(roman.length, str.length)
+        return to_arabic(str, result)
+      end
+    end
+  end
+
+  # iterative
+  def to_arabic
+    result = 0
+    str = self
+    roman_mapping.values.each do |roman|
+      while str.start_with?(roman)
+        result += roman_mapping.invert[roman]
+        str = str.slice(roman.length, str.length)
+      end
+    end
+    result
+  end
+
+  private
+
+  def roman_mapping
+    {
+      1000 => "M",
+      900 => "CM",
+      500 => "D",
+      400 => "CD",
+      100 => "C",
+      90 => "XC",
+      50 => "L",
+      40 => "XL",
+      10 => "X",
+      9 => "IX",
+      5 => "V",
+      4 => "IV",
+      1 => "I"
+    }
+  end
+end
+
+
+
 namespace :itatti do
   desc 'Index the data from the SPARQL endpoint'
   task index: :environment do
@@ -11,8 +60,8 @@ namespace :itatti do
   	years = ['1903','1938','1961']
   	#years = ['1961']
 
-	endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
-	# endpoint = 'http://192.168.1.2:9999/blazegraph/namespace/kb/sparql'
+	#endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql/'
+	endpoint = 'http://192.168.1.2:9999/blazegraph/namespace/kb/sparql'
 
 
 	p "Droping index"
@@ -121,9 +170,25 @@ namespace :itatti do
 					end
 					uri = uri[0]
 					if !images.include? uri
-						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil}
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil}
 					end
 					images[uri][:iiif] = aTriple[:o]
+				end
+
+				if aTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P149_is_identified_by' and aTriple[:o].include? '1903_plate_number'
+
+					uri = key.split('/recto/')
+					if uri.size == 1
+						uri = key.split('/verso/')
+					end
+					uri = uri[0]
+					plate = aTriple[:o].split('/')
+					if !images.include? uri
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil}
+					end
+					if plate[plate.size-1]
+						images[uri][:plate] = plate[plate.size-1].to_arabic.to_s.rjust(3, '0')
+					end
 				end
 
 				#the plate id
@@ -493,7 +558,7 @@ namespace :itatti do
 				# the british museum image
 				if subTriple[:o].include? 'britishmuseum.org/collectionimages'
 					if !images.include? uri
-						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil}
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil}
 					end
 					images[uri][:bm] = subTriple[:o]
 				end
@@ -535,6 +600,7 @@ namespace :itatti do
 
 	  	if inventoryNumbers.keys().include? uri
 	  		doc[:inventory_number_s] = inventoryNumbers[uri][0]
+	  		doc[:inventory_number] = inventoryNumbers[uri][0]
 	  	end
 
 
@@ -651,6 +717,7 @@ namespace :itatti do
 		  			if images.include? uri
 		  				doc[:image_plate_display] = images[uri][:iiif]
 		  				doc[:image_bm_display] = images[uri][:bm]
+		  				doc[:image_plate_number_s] = images[uri][:plate]
 		  			end
 		  		end
 
@@ -698,6 +765,11 @@ namespace :itatti do
 
 		end
 
+		# if uri == 'http://data.itatti.harvard.edu/florentinedrawings/0000006-Berenson'
+		# 	p doc
+		# 	p images[uri]
+		# end
+
 		# p doc
 	  	solr.add doc
 	  	#solr.commit
@@ -705,6 +777,8 @@ namespace :itatti do
 
 	end
 	solr.commit
+
+	# p images.to_json
 
   end
 end

@@ -21,10 +21,34 @@
 // switch the images out
 $(document).ready(function () {
   $('.preview-thumbnail').click(function (event) {
-    var d = $(this).data('src')
-    console.log(d)
-    $('#main-image').attr('src', d)
+    var src = $(this).data('src')
+    var iiif = $(this).data('iiif')
+
+    if (iiif){
+    	$('#openseadragon').css('display','block')
+    	$('#main-image-link').css('display','none')
+    }else{
+    	$('#main-image-link').css('display','block')
+    	$('#openseadragon').css('display','none')
+    }
+    $('#main-image').attr('src', src)
+
+
     event.preventDefault()
     return false
   })
+
+  if (iiifData){
+  	console.log("DOOING IT")
+
+    var viewer = OpenSeadragon({
+        id: "openseadragon",
+        prefixUrl: '/assets/openseadragon/',
+	    sequenceMode: true,
+	    tileSources: [iiifData]
+
+
+    });
+  }
+
 })

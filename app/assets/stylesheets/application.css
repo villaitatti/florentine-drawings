@@ -43,17 +43,24 @@
 	padding:5px;
 }
 
+#openseadragon{
+	width: 450px;
+	height: 575px;
+}
+
+#main-image-link, #openseadragon{
+	display: none;
+}
+
 .document .page-image{
 	max-width: 375px;
 	height: auto;
 }
-
 .data-table{
 	font-size: 85%;
 }
-
 .twitter-typehead .twitter-typehead{
-display:none !important;
+	display:none !important;
 }
 
 

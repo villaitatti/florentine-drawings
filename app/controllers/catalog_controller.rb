@@ -101,6 +101,7 @@ class CatalogController < ApplicationController
     config.add_index_field 'author_display', label: 'Artist'
     config.add_index_field 'author_vern_display', label: 'Artist'
     config.add_index_field 'owners_label_display', label: 'Location'
+    config.add_index_field 'inventory_number_s', label: 'Inventory Number'
 
 
 
@@ -164,7 +165,6 @@ class CatalogController < ApplicationController
     config.add_show_field 'contributors_ulan_t', label: 'ULAN Uri'
 
 
-    config.add_show_field 'inventory_number', label: 'Inventory Number'
 
 
     # "fielded" search configuration. Used by pulldown among other places.
@@ -224,6 +224,14 @@ class CatalogController < ApplicationController
         pf: '$location_pf'
       }
     end
+
+    config.add_search_field('Inventory Number') do |field|
+      field.solr_local_parameters = {
+        qf: '$inventory_number_qf',
+        pf: '$inventory_number_pf'
+      }
+    end
+
 
     # # Specifying a :qt only to show it's possible, and so our internal automated
     # # tests can test it. In this case it's the same as

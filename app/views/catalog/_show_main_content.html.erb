@@ -1,3 +1,9 @@
+<% if !@document['image_plate_number_s'].blank? %>
+  <script type="text/javascript">
+    var iiifData = 'http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_<%=@document['image_plate_number_s']%>.jpg/info.json'
+  </script>
+<% end %>
+
 <%= render 'previous_next_doc' %>
 
 <% @page_title = t('blacklight.search.show.title', :document_title => document_show_html_title, :application_name => application_name).html_safe %>
@@ -12,15 +18,19 @@
       image_list = []
       p "-----"
 
-      if !@document['image_plate_display'].nil?
-        image_list << {:image=>'/assets/temp_iiif.jpg', :alt => 'View IIIF image', :link => @document['image_plate_display'][0] }
+      #if !@document['image_plate_display'].nil?
+      #  image_list << {:image=>'/assets/temp_iiif.jpg', :alt => 'View IIIF image', :link => @document['image_plate_display'][0] }
+      #end
+
+      if !@document['image_plate_number_s'].nil?
+       image_list << {:image=>"http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/!150,75", :iiif => true, :alt => 'View IIIF image', :link => "http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/full/0/native.jpg"}
       end
       if !@document['image_bm_display'].nil?
-        image_list << {:image=>@document['image_bm_display'][0], :alt => 'Image from British museum', :link => @document['image_bm_display'][0] }
+        image_list << {:image=>@document['image_bm_display'][0], :iiif => false, :alt => 'Image from British museum', :link => @document['image_bm_display'][0] }
       end
 
       if !@document['image_page_display'].nil?
-        image_list << {:image=>@document['image_page_display'][0], :alt => '', :link => @document['image_page_display'][0] }
+        image_list << {:image=>@document['image_page_display'][0], :iiif => false, :alt => '', :link => @document['image_page_display'][0] }
       end
 
 
@@ -29,22 +39,36 @@
 
     <div class="row">
       <div class="col-md-5">
-
         <% if image_list.size == 0 %>
           <div class="thumbnail">
             <img alt="No Image" src="" data-holder-rendered="true" style="height: 180px; width: 100%; display: block;">
           </div>
         <% else %>
 
-          <a href="<%=image_list[0][:link]%>" class="thumbnail">
+
+          <% if !@document['image_plate_number_s'].blank? %>
+            <div id="openseadragon" style="display:block;" class="thumbnail"></div>
+            <a href=""  id="main-image-link" class="thumbnail">
+              <img alt="" id="main-image" src="" data-holder-rendered="true" style="width: 100%; display: block;">
+            </a>
+
+          <% else %>
+
+          <a href="<%=image_list[0][:link]%>" style="display:block;" id="main-image-link" class="thumbnail">
             <img alt="<%=image_list[0][:alt]%>" id="main-image" src="<%=image_list[0][:image]%>" data-holder-rendered="true" style="width: 100%; display: block;">
           </a>
+
+
+
+          <% end %>
+
+
 
 
           <div class="row">
               <% image_list.each do |img| %>
                 <div class="col-xs-3 col-md-3">
-                  <a href="<%=img[:link]%>" class="thumbnail preview-thumbnail" data-src="<%=img[:image]%>">
+                  <a href="<%=img[:link]%>" class="thumbnail preview-thumbnail" data-iiif="<%=img[:iiif]%>" data-src="<%=img[:image]%>">
                     <img alt="<%=img[:alt]%>"   src="<%=img[:image]%>" data-holder-rendered="true" style="width: 50px; display: block;">
                   </a>
                 </div>
