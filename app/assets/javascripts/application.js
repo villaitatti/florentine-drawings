@@ -16,6 +16,10 @@
 // Required by Blacklight
 // = require blacklight/blacklight
 
+
+// i'm overwriting blacklight/autocomplete.js because there is a bug where it is re-initializing multiple times
+
+
 // = require_tree .
 
 
