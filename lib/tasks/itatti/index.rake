@@ -61,7 +61,7 @@ namespace :itatti do
   	#years = ['1961']
 
 	endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql'
-	#endpoint = 'http://192.168.1.2:9999/blazegraph/namespace/kb/sparql'
+	endpoint = 'http://192.168.1.7:9999/blazegraph/namespace/kb/sparql'
 
 
 	p "Droping index"
@@ -764,28 +764,47 @@ namespace :itatti do
 		  	authorDisplay = ""
 		  	authors = []
 		  	objects['1961'][uri][:creators].each do |creator|
-		  		doc[:subject_topic_facet] = "#{creator[:name]}"
+		  		doc[:subject_topic_facet] = ["#{creator[:name]}"]
 		  		authorDisplay = authorDisplay + "#{creator[:name]} #{creator[:role]} "
 		  		authors << "#{creator[:name]}"
 		  	end
 		  	doc[:author_display] = authorDisplay.strip
 		  	doc[:author_t] = authors
 			doc[:authorsuggest] = authorDisplay.strip
-
 		end
 
-		# if uri == 'http://data.itatti.harvard.edu/florentinedrawings/0000006-Berenson'
+
+		# if the 1968 author did not make it in use the first author we have
+		if !doc[:author_t].any? and doc[:contributors_t].any?
+			doc[:author_display] = doc[:contributors_t][0].strip
+			doc[:author_t] = doc[:contributors_t][0]
+			doc[:authorsuggest] = doc[:contributors_t][0].strip
+		end
+
+		#add in the other creators to the facet if they are differnt from 1961
+		if !doc[:subject_topic_facet].nil?
+			doc[:contributors_t].each do |creator|
+				if !doc[:subject_topic_facet].include? creator
+					doc[:subject_topic_facet] << creator
+				end
+			end
+		end
+
+		# if uri == 'http://data.itatti.harvard.edu/florentinedrawings/000113C-Berenson'
 		# 	p doc
 		# 	p images[uri]
+		# 	p objects['1938'][uri][:creators]
+		# 	p doc[:contributors_t]
+		# 	xxxxx = xxx
 		# end
 
 		# p doc
 	  	solr.add doc
-	  	solr.commit
-	  	sleep(0.1)
+	  	# solr.commit
+	  	# sleep(0.1)
 
 	end
-	# solr.commit
+	solr.commit
 
 	# p images.to_json
 
