@@ -792,6 +792,7 @@ namespace :itatti do
 			end
 		end
 
+		doc[:thumbnail_url_s] = "https://s3-eu-west-1.amazonaws.com/florentinedrawings/thumbs/#{doc[:id]}.jpg"
 		# if uri == 'http://data.itatti.harvard.edu/florentinedrawings/000113C-Berenson'
 		# 	p doc
 		# 	p images[uri]

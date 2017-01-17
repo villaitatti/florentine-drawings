@@ -164,7 +164,7 @@ class CatalogController < ApplicationController
     config.add_show_field 'contributors_alt_t', label: 'Contributors alt'
     config.add_show_field 'contributors_ulan_t', label: 'ULAN Uri'
 
-
+    config.index.thumbnail_field = :thumbnail_url_s
 
 
     # "fielded" search configuration. Used by pulldown among other places.
