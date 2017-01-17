@@ -155,14 +155,14 @@
                     end
                   %>
 
-                  <a href="/?f%5Bowner_facet%5D%5B%5D=<%=label%>"><%=label%></a> <% if !@document['bm_uri_s'].blank? %> <a href="<%=@document['bm_uri_s']%>">View Record</a><% end %>
+                  <a href="/?f%5Bowner_facet%5D%5B%5D=<%=label%>"><%=label%></a> <% if !@document['bm_uri_s'].blank? %> [ <a href="<%=@document['bm_uri_s']%>">View BM Record</a> ]<% end %>
                 <% end %>
               <% end %>
             </dd>
           <% end %>
           <% if !@document['museum_url_s'].blank?%>
             <dt><%="Link"%></dt>
-            <dd><%=@document['museum_url_s']%></dd>
+            <dd><a href="<%=@document['museum_url_s']%>">Museum Site</a></dd>
           <% end %>
 
           <% if !@document['page_number_1903_s'].blank?%>

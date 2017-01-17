@@ -1,3 +1,6 @@
 en:
   blacklight:
     application_name: 'The Drawings of the Florentine Painters'
+    search:
+      facets:
+        title: 'Filter by'
