@@ -171,7 +171,7 @@ namespace :itatti do
 					end
 					uri = uri[0]
 					if !images.include? uri
-						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil}
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil, :plate_roman => nil}
 					end
 					images[uri][:iiif] = aTriple[:o]
 				end
@@ -185,10 +185,11 @@ namespace :itatti do
 					uri = uri[0]
 					plate = aTriple[:o].split('/')
 					if !images.include? uri
-						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil}
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil, :plate_roman => nil}
 					end
 					if plate[plate.size-1]
 						images[uri][:plate] = plate[plate.size-1].to_arabic.to_s.rjust(3, '0')
+						images[uri][:plate_roman] = plate[plate.size-1]
 					end
 				end
 
@@ -567,7 +568,7 @@ namespace :itatti do
 				# the british museum image
 				if subTriple[:o].include? 'britishmuseum.org/collectionimages'
 					if !images.include? uri
-						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil}
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil, :plate_roman => nil}
 					end
 					images[uri][:bm] = subTriple[:o]
 				end
@@ -727,6 +728,7 @@ namespace :itatti do
 		  				doc[:image_plate_display] = images[uri][:iiif]
 		  				doc[:image_bm_display] = images[uri][:bm]
 		  				doc[:image_plate_number_s] = images[uri][:plate]
+		  				doc[:image_plate_number_roman_s] = images[uri][:plate_roman]
 		  			end
 		  		end
 

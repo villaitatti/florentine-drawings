@@ -26,7 +26,7 @@
        image_list << {:image=>"http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/!150,75", :iiif => true, :alt => 'View IIIF image', :link => "http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/full/0/native.jpg"}
       end
       if !@document['image_bm_display'].nil?
-        image_list << {:image=>@document['image_bm_display'][0], :iiif => false, :alt => 'Image from British museum', :link => @document['image_bm_display'][0] }
+        image_list << {:image=>@document['image_bm_display'][0], :iiif => false, :alt => 'Image from British museum', :link => @document['bm_uri_s'] }
       end
 
       if !@document['image_page_display'].nil?
@@ -39,6 +39,7 @@
 
     <div class="row">
       <div class="col-md-5">
+
         <% if image_list.size == 0 %>
           <div class="thumbnail">
             <img alt="No Image" src="" data-holder-rendered="true" style="height: 180px; width: 100%; display: block;">
@@ -66,6 +67,16 @@
 
 
           <div class="row">
+
+              <% if !@document['bm_uri_s'].blank? %>
+                <div class="text-center"><i>Image from the <a href="<%=@document['bm_uri_s']%>">British Museum</a></i></div>
+              <% end %>
+
+              <% if !@document['image_plate_number_roman_s'].blank? %>
+                <div class="text-center"><i>Plate <%=@document['image_plate_number_roman_s']%></i></div>
+              <% end %>
+
+
               <% image_list.each do |img| %>
                 <div class="col-xs-3 col-md-3">
                   <a href="<%=img[:link]%>" class="thumbnail preview-thumbnail" data-iiif="<%=img[:iiif]%>" data-src="<%=img[:image]%>">
@@ -75,6 +86,7 @@
               <% end %>
           </div>
         <% end %>
+
       </div>
 
       <div class="col-md-7">
