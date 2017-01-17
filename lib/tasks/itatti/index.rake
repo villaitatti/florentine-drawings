@@ -60,7 +60,8 @@ namespace :itatti do
   	years = ['1903','1938','1961']
   	#years = ['1961']
 
-	endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql'
+	endpoint = 'http://data.itatti.harvard.edu/sparql'
+	#endpoint = 'http://data.itatti.harvard.edu:10080/blazegraph/namespace/florentinedrawings/sparql'
 	# endpoint = 'http://192.168.1.7:9999/blazegraph/namespace/kb/sparql'
 
 
@@ -81,7 +82,7 @@ namespace :itatti do
 		query = "
 		  Select * WhERE {
 
-		    GRAPH <http://data.itatti.harvard.edu/florentinedrawings/berenson#{year}>{
+		    GRAPH <http://data.itatti.harvard.edu/resource/florentinedrawings/berenson#{year}>{
 		        ?s ?p ?o
 		      }
 		  }
@@ -223,16 +224,16 @@ namespace :itatti do
 						if st[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by'
 							objects[year][key][:creator_carried_out_by] << st[:o]
 							if !objects[year][key][:creator_all].include? st[:o];  objects[year][key][:creator_all] << st[:o] end
-						elsif st[:p] == 'http://data.itatti.harvard.edu/florentinedrawings/ontologies/attributed_to'
+						elsif st[:p] == 'http://data.itatti.harvard.edu/resource/florentinedrawings/ontologies/attributed_to'
 							objects[year][key][:creator_attributed_to] << st[:o]
 							if !objects[year][key][:creator_all].include? st[:o]; objects[year][key][:creator_all] << st[:o] end
-						elsif st[:p] == 'http://data.itatti.harvard.edu/florentinedrawings/ontologies/carried_out_by_school_of'
+						elsif st[:p] == 'http://data.itatti.harvard.edu/resource/florentinedrawings/ontologies/carried_out_by_school_of'
 							objects[year][key][:creator_school_of] << st[:o]
 							if !objects[year][key][:creator_all].include? st[:o]; objects[year][key][:creator_all] << st[:o] end
-						elsif st[:p] == 'http://data.itatti.harvard.edu/florentinedrawings/ontologies/carried_out_by_imitator_of'
+						elsif st[:p] == 'http://data.itatti.harvard.edu/resource/florentinedrawings/ontologies/carried_out_by_imitator_of'
 							objects[year][key][:creator_imitator_of] << st[:o]
 							if !objects[year][key][:creator_all].include? st[:o]; objects[year][key][:creator_all] << st[:o] end
-						elsif st[:p] == 'http://data.itatti.harvard.edu/florentinedrawings/ontologies/possibly_carried_out_by'
+						elsif st[:p] == 'http://data.itatti.harvard.edu/resource/florentinedrawings/ontologies/possibly_carried_out_by'
 							objects[year][key][:possibly_carried_out_by] << st[:o]
 							if !objects[year][key][:creator_all].include? st[:o]; objects[year][key][:creator_all] << st[:o] end
 						end
@@ -402,7 +403,7 @@ namespace :itatti do
 
 	query = "
 	  Select * WhERE {
-	    GRAPH <http://data.itatti.harvard.edu/florentinedrawings/project2016>{
+	    GRAPH <http://data.itatti.harvard.edu/resource/florentinedrawings/project2016>{
 	        ?s ?p ?o
 	      }
 	  }
@@ -793,7 +794,7 @@ namespace :itatti do
 		end
 
 		doc[:thumbnail_url_s] = "https://s3-eu-west-1.amazonaws.com/florentinedrawings/thumbs/#{doc[:id]}.jpg"
-		# if uri == 'http://data.itatti.harvard.edu/florentinedrawings/000113C-Berenson'
+		# if uri == 'http://data.itatti.harvard.edu/resource/florentinedrawings/000113C-Berenson'
 		# 	p doc
 		# 	p images[uri]
 		# 	p objects['1938'][uri][:creators]
