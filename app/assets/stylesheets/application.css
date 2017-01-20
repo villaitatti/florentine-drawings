@@ -63,4 +63,30 @@
 	display:none !important;
 }
 
+#documents .document .document-thumbnail{
+float:left;
+width: 20%;
 
+
+}
+
+.document-thumbnail img {
+width: 100%;
+}
+
+
+.document {
+overflow:hidden;
+}
+
+
+
+
+
+
+
+.document-metadata {
+
+float:left;
+
+}
