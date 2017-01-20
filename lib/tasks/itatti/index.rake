@@ -95,9 +95,8 @@ namespace :itatti do
 		   :method => "post",
 		   :url => endpoint,
 		   :payload => {:query => query},
-		   :headers => { :accept => :ld+json}
+		   :headers => { :accept => :json}
 		).execute
-
 		response = JSON.parse(response)
 
 		response['results']['bindings'].each do |triple|
