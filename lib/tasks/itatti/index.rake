@@ -846,12 +846,12 @@ namespace :itatti do
 
 		# p doc
 	  	solr.add doc
-	  	solr.commit
+	  	# solr.commit
 	  	sleep(0.05)
 
 
 	end
-	# solr.commit
+	solr.commit
 	# p images
 	# p images.to_json
 
