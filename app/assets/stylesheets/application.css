@@ -32,7 +32,6 @@
 	margin: 0px;
 	padding: 0px;
 	position: absolute;
-    width: 700px;
     top: 5px;
     left: 50px;
     font-family: serif;
@@ -47,9 +46,34 @@
 	width: 450px;
 	height: 575px;
 }
+@media screen and (min-width:900px) and (max-width:1200px) {
+	#openseadragon{
+		width: 400px;
+	}
+}
+
+@media screen and (min-width:100px) and (max-width:450px) {
+	#openseadragon{
+		width: 350px;
+	}
+}
+@media screen and (min-width:100px) and (max-width:525px) {
+	.navbar-header img{
+		width: 300px;
+		height: auto;
+	}
+
+}
+
+
+
 
 #main-image-link, #openseadragon{
 	display: none;
+}
+
+#main-image-label{
+	margin: 10px 0px 10px 0px;
 }
 
 .document .page-image{
@@ -92,12 +116,12 @@ float:left;
 }
 
 
-img {  
-  line-height: 2;  
+img {
+  line-height: 2;
   text-align: center;
 }
 
-img:after {  
+img:after {
   content: attr(alt);
   display: block;
   position: absolute;

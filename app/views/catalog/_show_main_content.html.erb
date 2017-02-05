@@ -23,15 +23,50 @@
       #end
 
       if !@document['image_plate_number_s'].nil?
-       image_list << {:image=>"http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/!150,75", :iiif => true, :alt => 'View IIIF image', :link => "http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/full/0/native.jpg"}
+       image_list << {:image=>"http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/!150,75", :iiif => true, :alt => 'Plate ' + @document['image_plate_number_roman_s'], :link => "http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/full/0/native.jpg"}
       end
+
       if !@document['image_bm_display'].nil?
         image_list << {:image=>@document['image_bm_display'][0], :iiif => false, :alt => 'Image from British museum', :link => @document['bm_uri_s'] }
       end
 
-      if !@document['image_page_display'].nil?
-        image_list << {:image=>@document['image_page_display'][0], :iiif => false, :alt => '', :link => @document['image_page_display'][0] }
+
+
+
+      if !@document['museum_image_url_display'].nil?
+
+
+        image_from = ""
+
+        @document['owners_label_t'].each do |label|
+          p label
+          p label
+          p label
+          image_from = "#{image_from} Image from #{label}"
+        end
+        image_from = image_from.strip()
+
+
+        @document['museum_image_url_display'].each do |url|
+          image_list << {:image=>url, :iiif => false, :alt => image_from, :link => @document['museum_url_s'] }
+        end
       end
+
+      if !@document['image_page_display'].nil?
+
+        link = @document['image_page_display'][0]
+        if !@document['image_plate_display'].nil?
+          link = @document['image_plate_display'][0]
+        end
+
+        image_list << {:image=>@document['image_page_display'][0], :iiif => false, :alt => "", :link => link }
+      end
+
+      p @document['owners_label_t']
+      p @document['owners_label_t']
+      p @document['owners_label_t']
+      p @document['owners_label_t']
+      p image_list
 
 
 
@@ -55,9 +90,9 @@
 
           <% else %>
 
-          <a href="<%=image_list[0][:link]%>" style="display:block;" id="main-image-link" class="thumbnail">
-            <img alt="<%=image_list[0][:alt]%>" id="main-image" src="<%=image_list[0][:image]%>" data-holder-rendered="true" style="width: 100%; display: block;">
-          </a>
+            <a href="<%=image_list[0][:link]%>" style="display:block;" id="main-image-link" class="thumbnail">
+              <img alt="<%=image_list[0][:alt]%>" id="main-image" src="<%=image_list[0][:image]%>" data-holder-rendered="true" style="width: 100%; display: block;">
+            </a>
 
 
 
@@ -68,18 +103,29 @@
 
           <div class="row">
 
-              <% if !@document['bm_uri_s'].blank? %>
-                <div class="text-center"><i>Image from the <a href="<%=@document['bm_uri_s']%>">British Museum</a></i></div>
-              <% end %>
+
 
               <% if !@document['image_plate_number_roman_s'].blank? %>
-                <div class="text-center"><i>Plate <%=@document['image_plate_number_roman_s']%></i></div>
+                <div id="main-image-label" class="text-center"><i>Plate <%=@document['image_plate_number_roman_s']%></i></div>
+
+              <% elsif !@document['museum_image_url_display'].blank? %>
+                <%
+                  image_from = ""
+                  @document['owners_label_t'].each_with_index do |label, index|
+                    image_from = "#{image_from} Image from #{label}"
+                  end
+                  image_from = image_from.strip()
+                %>
+                <div id="main-image-label" class="text-center"><i><%=image_from%></i></div>
+              <% else %>
+                <div id="main-image-label" class="text-center"><i><%=image_from%></i></div>
+
               <% end %>
 
 
               <% image_list.each do |img| %>
                 <div class="col-xs-3 col-md-3">
-                  <a href="<%=img[:link]%>" class="thumbnail preview-thumbnail" data-iiif="<%=img[:iiif]%>" data-src="<%=img[:image]%>">
+                  <a href="<%=img[:link]%>" class="thumbnail preview-thumbnail" data-iiif="<%=img[:iiif]%>" data-src="<%=img[:image]%>" data-label="<%=img[:alt]%>">
                     <img alt="<%=img[:alt]%>"   src="<%=img[:image]%>" data-holder-rendered="true" style="width: 50px; display: block;">
                   </a>
                 </div>

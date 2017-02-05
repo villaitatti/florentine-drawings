@@ -36,8 +36,10 @@ $(document).ready(function () {
     }else{
     	$('#main-image-link').css('display','block')
     	$('#openseadragon').css('display','none')
+      $('#main-image-link').attr('href',$(this).attr('href'))
     }
     $('#main-image').attr('src', src)
+    $('#main-image-label').text($(this).data('label'))
 
     event.preventDefault()
     return false

@@ -147,31 +147,49 @@ namespace :itatti do
 				end
 
 				# page image from the 1903 version
-				if aTriple[:o] == 'Page image' or aTriple[:o] == 'Page thumbnail'
-					page_number = key[/([0-9]{3})\.jpg/,1]
-					if !page_number.nil?
-						page_number = page_number.to_i.to_s
-						if !images.include? page_number
-							images[page_number] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil}
-						end
-						if key.include? 'text200'
-							images[page_number][:thumbnail] = key
-						else
-							images[page_number][:page] = key
+				# if aTriple[:o] == 'Page image' or aTriple[:o] == 'Page thumbnail'
+				# 	page_number = key[/([0-9]{3})\.jpg/,1]
+				# 	if !page_number.nil?
+				# 		page_number = page_number.to_i.to_s
+				# 		if !images.include? page_number
+				# 			images[page_number] = {:thumbnail => nil, :page => nil, :iiif => nil, :museum_image_url => [], :museum_image_text => [], :bm => nil}
+				# 		end
+				# 		if key.include? 'text200'
+				# 			images[page_number][:thumbnail] = key
+				# 		else
+				# 			images[page_number][:page] = key
+				# 		end
+
+				# 	end
+				# end
+
+				if aTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P138i_has_representation'
+					if key.include? '1903_page'
+						uri = key.split('/1903_page/')
+						uri = uri[0]
+						if !images.include? uri
+							images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :museum_image_url => [], :museum_image_text => [], :bm => nil}
 						end
 
+						if aTriple[:o].include? 'text500'
+							images[uri][:page] = aTriple[:o]
+						else
+							images[uri][:thumbnail] = aTriple[:o]
+						end
 					end
 				end
 
+
+
+
+
 				# the iiif plate url
 				if aTriple[:o].include? 'iiif.lib.harvard'
-					uri = key.split('/recto/')
-					if uri.size == 1
-						uri = key.split('/verso/')
-					end
+					uri = key.split('/1903_page/')
 					uri = uri[0]
+
 					if !images.include? uri
-						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil, :plate_roman => nil}
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :museum_image_url => [], :museum_image_text => [], :bm => nil, :plate => nil, :plate_roman => nil}
 					end
 					images[uri][:iiif] = aTriple[:o]
 				end
@@ -185,7 +203,7 @@ namespace :itatti do
 					uri = uri[0]
 					plate = aTriple[:o].split('/')
 					if !images.include? uri
-						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil, :plate_roman => nil}
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :museum_image_url => [], :museum_image_text => [], :bm => nil, :plate => nil, :plate_roman => nil}
 					end
 					if plate[plate.size-1]
 						images[uri][:plate] = plate[plate.size-1].to_arabic.to_s.rjust(3, '0')
@@ -490,9 +508,9 @@ namespace :itatti do
 				end
 			end
 		end
-
-
 	end
+
+
 
 
 	# clean up the data to only what we want from AAT
@@ -565,13 +583,25 @@ namespace :itatti do
 					currentOwner[uri] << subTriple[:o]
 				end
 
-				# the british museum image
-				if subTriple[:o].include? 'britishmuseum.org/collectionimages'
+
+				if subTriple[:p] == 'http://www.cidoc-crm.org/cidoc-crm/P138i_has_representation'
 					if !images.include? uri
-						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :bm => nil, :plate => nil, :plate_roman => nil}
+						images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :museum_image_url => [], :museum_image_text => [], :bm => nil, :plate => nil, :plate_roman => nil}
 					end
-					images[uri][:bm] = subTriple[:o]
+					if !subTriple[:o].include? 'museum_image'
+						images[uri][:museum_image_url] << subTriple[:o]
+						images[uri][:museum_image_text] << 'From blah'
+					end
 				end
+
+
+				# # the british museum image
+				# if subTriple[:o].include? 'britishmuseum.org/collectionimages'
+				# 	if !images.include? uri
+				# 		images[uri] = {:thumbnail => nil, :page => nil, :iiif => nil, :museum_image_url => [], :museum_image_text => [], :bm => nil, :plate => nil, :plate_roman => nil}
+				# 	end
+				# 	images[uri][:bm] = subTriple[:o]
+				# end
 
 				if projectTriple.include? 'inventory_number' and subTriple[:p].include? 'http://www.w3.org/2000/01/rdf-schema#label'
 					if !inventoryNumbers.keys().include? uri
@@ -587,6 +617,7 @@ namespace :itatti do
 	end
 
 	counter = 0
+
 	allUris.each do |uri|
 
 	  	doc = {}
@@ -719,17 +750,19 @@ namespace :itatti do
 	  			doc["page_number_#{year}_s"] = objects[year][uri][:page_number]
 
 	  			if year == '1903'
-		  			if images.include? objects[year][uri][:page_number]
-		  				doc[:image_thumb_display] = images[objects[year][uri][:page_number]][:thumbnail]
-		  				doc[:image_page_display] = images[objects[year][uri][:page_number]][:page]
-		  			end
-
 		  			if images.include? uri
 		  				doc[:image_plate_display] = images[uri][:iiif]
 		  				doc[:image_bm_display] = images[uri][:bm]
 		  				doc[:image_plate_number_s] = images[uri][:plate]
 		  				doc[:image_plate_number_roman_s] = images[uri][:plate_roman]
+		  				doc[:image_thumb_display] = images[uri][:thumbnail]
+		  				doc[:image_page_display] = images[uri][:page]
 		  			end
+		  		end
+
+		  		if images.include? uri
+					doc[:museum_image_url_display] = images[uri][:museum_image_url]
+					doc[:museum_image_text_display] = images[uri][:museum_image_text]
 		  		end
 
 			  	authorDisplay = ""
@@ -793,6 +826,13 @@ namespace :itatti do
 		end
 
 		doc[:thumbnail_url_s] = "https://s3-eu-west-1.amazonaws.com/florentinedrawings/thumbs/#{doc[:id]}.jpg"
+
+		if doc[:museum_image_url_display]
+			if doc[:museum_image_url_display].size > 0
+				doc[:thumbnail_url_s] = doc[:museum_image_url_display][0]
+			end
+		end
+
 		# if uri == 'http://data.itatti.harvard.edu/resource/florentinedrawings/000113C-Berenson'
 		# 	p doc
 		# 	p images[uri]
@@ -803,13 +843,14 @@ namespace :itatti do
 
 		# p doc
 	  	solr.add doc
-	  	solr.commit
+	  	# solr.commit
 	  	# sleep(0.1)
 
-	end
-	# solr.commit
 
-	# p images.to_json
+	end
+	solr.commit
+	# p images
+	p images.to_json
 
   end
 end
