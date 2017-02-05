@@ -110,6 +110,8 @@
                   image_from = image_from.strip()
                 %>
                 <div id="main-image-label" class="text-center"><i><%=image_from%></i></div>
+              <% elsif !@document['image_page_display'].nil? %>
+                <div id="main-image-label" class="text-center"><i>Berenson 1903 Edition</i></div>
               <% else %>
                 <div id="main-image-label" class="text-center"><i><%=image_from%></i></div>
 
