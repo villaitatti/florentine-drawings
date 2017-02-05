@@ -39,14 +39,13 @@
         image_from = ""
 
         @document['owners_label_t'].each do |label|
-          p label
-          p label
-          p label
           image_from = "#{image_from} Image from #{label}"
         end
         image_from = image_from.strip()
 
-
+        if !@document['bm_uri_s'].nil?
+          @document['museum_url_s'] = @document['bm_uri_s']
+        end
         @document['museum_image_url_display'].each do |url|
           image_list << {:image=>url, :iiif => false, :alt => image_from, :link => @document['museum_url_s'] }
         end
@@ -59,14 +58,8 @@
           link = @document['image_plate_display'][0]
         end
 
-        image_list << {:image=>@document['image_page_display'][0], :iiif => false, :alt => "", :link => link }
+        image_list << {:image=>@document['image_page_display'][0], :iiif => false, :alt => "Berenson 1903 Edition", :link => link }
       end
-
-      p @document['owners_label_t']
-      p @document['owners_label_t']
-      p @document['owners_label_t']
-      p @document['owners_label_t']
-      p image_list
 
 
 
@@ -106,7 +99,7 @@
 
 
               <% if !@document['image_plate_number_roman_s'].blank? %>
-                <div id="main-image-label" class="text-center"><i>Plate <%=@document['image_plate_number_roman_s']%></i></div>
+                <div id="main-image-label" class="text-center"><i>Berenson 1903 Edition, Plate <%=@document['image_plate_number_roman_s']%></i></div>
 
               <% elsif !@document['museum_image_url_display'].blank? %>
                 <%

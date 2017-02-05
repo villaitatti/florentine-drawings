@@ -39,7 +39,7 @@ $(document).ready(function () {
       $('#main-image-link').attr('href',$(this).attr('href'))
     }
     $('#main-image').attr('src', src)
-    $('#main-image-label').text($(this).data('label'))
+    $('#main-image-label').html('<i>' + $(this).data('label') + '</i>')
 
     event.preventDefault()
     return false

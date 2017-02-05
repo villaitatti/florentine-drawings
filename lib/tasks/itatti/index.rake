@@ -633,6 +633,8 @@ namespace :itatti do
 
 	  	if museumLinks.keys().include? uri
 	  		doc[:museum_url_s] = museumLinks[uri]
+	  		doc[:museum_url_s].gsub! '<', ''
+	  		doc[:museum_url_s].gsub! '>', ''
 	  	end
 
 	  	if bmUri.keys().include? uri
@@ -827,11 +829,12 @@ namespace :itatti do
 
 		doc[:thumbnail_url_s] = "https://s3-eu-west-1.amazonaws.com/florentinedrawings/thumbs/#{doc[:id]}.jpg"
 
-		if doc[:museum_image_url_display]
-			if doc[:museum_image_url_display].size > 0
-				doc[:thumbnail_url_s] = doc[:museum_image_url_display][0]
-			end
-		end
+		# if there is a museum image use that
+		# if doc[:museum_image_url_display]
+		# 	if doc[:museum_image_url_display].size > 0
+		# 		doc[:thumbnail_url_s] = doc[:museum_image_url_display][0]
+		# 	end
+		# end
 
 		# if uri == 'http://data.itatti.harvard.edu/resource/florentinedrawings/000113C-Berenson'
 		# 	p doc
