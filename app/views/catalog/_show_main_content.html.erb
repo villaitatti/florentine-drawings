@@ -39,7 +39,7 @@
         image_from = ""
 
         @document['owners_label_t'].each do |label|
-          image_from = "#{image_from} Image from #{label}"
+          image_from = "#{image_from} Image from the #{label}"
         end
         image_from = image_from.strip()
 
@@ -105,7 +105,7 @@
                 <%
                   image_from = ""
                   @document['owners_label_t'].each_with_index do |label, index|
-                    image_from = "#{image_from} Image from #{label}"
+                    image_from = "#{image_from} Image from the #{label}"
                   end
                   image_from = image_from.strip()
                 %>
@@ -135,18 +135,18 @@
           <dt><%="Inventory Number"%></dt>
           <dd><%=@document['inventory_number_s']%></dd>
 
-          <dt><%="Berenson #{recto_label}Title (1961)"%></dt>
+          <dt><%="#{recto_label}Title (1961)"%></dt>
           <dd><%=@document['recto_title_1961_t'][0]%></dd>
           <% if @document['verso_title_1961_t'][0] != '--' %>
-            <dt>Berenson Verso Title (1961)</dt>
+            <dt>Verso Title (1961)</dt>
             <dd><%=@document['verso_title_1961_t'][0]%></dd>
           <% end %>
 
           <% if !@document['recto_title_1938_t'][0].blank? %>
-            <dt><%="Berenson #{recto_label}Title (1938)"%></dt>
+            <dt><%="#{recto_label}Title (1938)"%></dt>
             <dd><%=@document['recto_title_1938_t'][0]%></dd>
             <% if @document['verso_title_1938_t'][0] != '--' %>
-              <dt>Berenson Verso Title (1938)</dt>
+              <dt>Verso Title (1938)</dt>
               <dd><%=@document['verso_title_1938_t'][0]%></dd>
             <% end %>
             <% if !@document['author_1938_display_s'].blank? %>
