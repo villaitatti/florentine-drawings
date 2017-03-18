@@ -55,4 +55,10 @@ $(document).ready(function () {
     });
   }
 
+
+  // in the search results page if the image oculd not load it hide it
+  $(".document-thumbnail.col-md-3 img")
+      .on('error', function() { $(this).toggle(); })
+
+
 })

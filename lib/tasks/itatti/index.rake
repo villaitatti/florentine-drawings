@@ -655,6 +655,7 @@ namespace :itatti do
 	  	doc[:contributors_t] = []
 	  	doc[:contributors_alt_t] = []
 	  	doc[:contributors_ulan_t] = []
+	  	doc[:title_sort] = ''
 
 	  	if currentOwner.keys().include? uri
 	  		currentOwner[uri].each do |owner|
@@ -786,6 +787,9 @@ namespace :itatti do
 	  		if objects['1961'][uri][:title_verso] != 'N/A'; title = "#{title} / #{objects['1961'][uri][:title_verso]}".sub('/ --','').strip end
   		  	doc[:title_t] = title
   			doc[:title_display] = title
+
+  			# set the sort title
+  			doc[:title_sort] = title
   		end
 
 	  	# use the 1938 title if it eixsts
@@ -795,6 +799,8 @@ namespace :itatti do
 	  		if objects['1938'][uri][:title_verso] != 'N/A'; title = "#{title} / #{objects['1938'][uri][:title_verso]}".sub('/ --','').strip end
   		   	doc[:subtitle_t] = title
   			doc[:subtitle_display] = title
+
+  			if doc[:title_sort] == ''; doc[:title_sort] = title end
   		end
 
   		if objects.keys().include? '1961'
@@ -806,6 +812,7 @@ namespace :itatti do
 		  		authors << "#{creator[:name]}"
 		  	end
 		  	doc[:author_display] = authorDisplay.strip
+		  	doc[:author_sort] = authorDisplay.strip
 		  	doc[:author_t] = authors
 			doc[:authorsuggest] = authorDisplay.strip
 		end
@@ -814,6 +821,7 @@ namespace :itatti do
 		# if the 1968 author did not make it in use the first author we have
 		if !doc[:author_t].any? and doc[:contributors_t].any?
 			doc[:author_display] = doc[:contributors_t][0].strip
+			doc[:author_sort] = doc[:contributors_t][0].strip
 			doc[:author_t] = doc[:contributors_t][0]
 			doc[:authorsuggest] = doc[:contributors_t][0].strip
 		end
@@ -846,12 +854,12 @@ namespace :itatti do
 
 		# p doc
 	  	solr.add doc
-	  	solr.commit
-	  	sleep(0.05)
+	  	# solr.commit
+	  	# sleep(0.05)
 
 
 	end
-	# solr.commit
+	solr.commit
 	# p images
 	# p images.to_json
 
