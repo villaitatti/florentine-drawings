@@ -499,6 +499,8 @@ namespace :itatti do
 		end
 
 		if aatUri.include? '/entity/'
+			p '-----------------------------------'
+			p aatUri
 			triples[aatUri].each do |subTriple|
 				if !museumData.keys().include? aatUri
 					museumData[aatUri] = { :label => '', :geonames => '' }
@@ -508,6 +510,8 @@ namespace :itatti do
 				end
 			end
 		end
+
+
 	end
 
 
@@ -700,7 +704,10 @@ namespace :itatti do
 
 	  	owners_combo_label_location = []
 	  	doc[:owners_label_t].zip(doc[:owners_geo_label_t]).each do |owner, location|
-	  		owners_combo_label_location << "#{owner} (#{location})"
+	  		owner = "#{owner} (#{location})"
+	  		owner = owner.gsub! '()', ''
+	  		owners_combo_label_location << owner
+
 
 	  	end
 
@@ -854,12 +861,12 @@ namespace :itatti do
 
 		# p doc
 	  	solr.add doc
-	  	solr.commit
-	  	sleep(0.025)
+	  	# solr.commit
+	  	# sleep(0.025)
 
 
 	end
-	#solr.commit
+	solr.commit
 	# p images
 	# p images.to_json
 

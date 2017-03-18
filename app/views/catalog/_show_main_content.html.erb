@@ -207,8 +207,9 @@
                       label = label + " (#{@document['owners_geo_label_t'][index]})"
                     end
                   %>
-
                   <a href="/?f%5Bowner_facet%5D%5B%5D=<%=label%>"><%=label%></a> <% if !@document['bm_uri_s'].blank? %> [ <a href="<%=@document['bm_uri_s']%>">View BM Record</a> ]<% end %>
+                <% else %>
+                  <a href="/?f%5Bowner_facet%5D%5B%5D=<%=label%>"><%=label%></a>
                 <% end %>
               <% end %>
             </dd>
@@ -284,7 +285,15 @@
                 <% if !@document["owners_label_t"].nil?%>
                   <% if @document["owners_label_t"].size > 0%>
                     <tr>
-                      <td>VIAF</td>
+                      <%
+                        viafLabel = "VIAF"
+                        @document["owners_label_t"].each_with_index do |name, index|
+                          if @document["owners_uri_t"][index].include? 'florentinedrawings/entity/'
+                            viafLabel = "VIAF/I Tatti"
+                          end
+                        end
+                      %>
+                      <td><%=viafLabel%></td>
                       <td>
                       <% @document["owners_label_t"].each_with_index do |name, index| %>
 
