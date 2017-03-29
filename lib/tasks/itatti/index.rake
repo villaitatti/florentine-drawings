@@ -382,7 +382,7 @@ namespace :itatti do
 
 
 			creators.each do |creator|
-				if responses.include? creator[:uri] and responses[creator[:uri]]['results']
+				if responses.include? creator[:uri] and responses[creator[:uri]]['results']					
 					creator[:nameAlt] = []
 					responses[creator[:uri]]['results']['bindings'].each do |triple|
 						if triple['Predicate']['value'] == 'http://www.w3.org/2004/02/skos/core#prefLabel'
@@ -405,7 +405,7 @@ namespace :itatti do
 				end
 
 			end
-			objects[year][key][:creators] = creators
+			objects[year][key][:creators] = creators			
 		end
 
 	end
@@ -594,7 +594,12 @@ namespace :itatti do
 					end
 					if !subTriple[:o].include? 'museum_image'
 						images[uri][:museum_image_url] << subTriple[:o]
-						images[uri][:museum_image_text] << 'From blah'
+						p projectTriple
+						if projectTriple.include? 'verso'
+							images[uri][:museum_image_text] << 'Verso'
+						else
+							images[uri][:museum_image_text] << 'Recto'
+						end 
 					end
 				end
 
@@ -659,6 +664,7 @@ namespace :itatti do
 	  	doc[:contributors_t] = []
 	  	doc[:contributors_alt_t] = []
 	  	doc[:contributors_ulan_t] = []
+	  	doc[:contrubtor_preflabel] = ''
 	  	doc[:title_sort] = ''
 
 	  	if currentOwner.keys().include? uri
@@ -721,7 +727,6 @@ namespace :itatti do
 
 
 	  	years.each do |year|
-
 	  		# add in the contrubtor for the data display and indexing
 	  		objects[year][uri][:creators].each do |c|
 	  			if !doc[:contributors_t].include? c[:name]
@@ -834,13 +839,13 @@ namespace :itatti do
 		end
 
 		#add in the other creators to the facet if they are differnt from 1961
-		if !doc[:subject_topic_facet].nil?
-			doc[:contributors_t].each do |creator|
-				if !doc[:subject_topic_facet].include? creator
-					doc[:subject_topic_facet] << creator
-				end
-			end
-		end
+		# if !doc[:subject_topic_facet].nil?
+		# 	doc[:contributors_t].each do |creator|
+		# 		if !doc[:subject_topic_facet].include? creator
+		# 			doc[:subject_topic_facet] << creator
+		# 		end
+		# 	end
+		# end
 
 		doc[:thumbnail_url_s] = "https://s3-eu-west-1.amazonaws.com/florentinedrawings/thumbs/#{doc[:id]}.jpg"
 

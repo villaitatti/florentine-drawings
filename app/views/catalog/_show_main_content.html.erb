@@ -23,7 +23,7 @@
       #end
 
       if !@document['image_plate_number_s'].nil?
-       image_list << {:image=>"http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/!150,75", :iiif => true, :alt => 'Plate ' + @document['image_plate_number_roman_s'], :link => "http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/full/0/native.jpg"}
+       image_list << {:image=>"http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/!150,75", :iiif => true, :alt => 'Berenson 1903 Edition, Plate ' + @document['image_plate_number_roman_s'], :link => "http://iiif.itatti.harvard.edu/Scaler/IIIF/florentinedrawings!Plate_#{@document['image_plate_number_s']}.jpg/full/full/0/native.jpg"}
       end
 
       if !@document['image_bm_display'].nil?
@@ -46,13 +46,17 @@
         if !@document['bm_uri_s'].nil?
           @document['museum_url_s'] = @document['bm_uri_s']
         end
-        @document['museum_image_url_display'].each do |url|
-          image_list << {:image=>url, :iiif => false, :alt => image_from, :link => @document['museum_url_s'] }
+        @document['museum_image_url_display'].each_with_index do |url, index|
+          if !@document['museum_image_text_display'][index].nil?
+            new_image_from = "#{@document['museum_image_text_display'][index]} #{image_from.sub 'Image', 'image'}"
+            image_list << {:image=>url, :iiif => false, :alt => new_image_from, :link => @document['museum_url_s'] }
+          else
+            image_list << {:image=>url, :iiif => false, :alt => image_from, :link => @document['museum_url_s'] }
+          end
         end
       end
 
       if !@document['image_page_display'].nil?
-
         link = @document['image_page_display'][0]
         if !@document['image_plate_display'].nil?
           link = @document['image_plate_display'][0]
@@ -60,8 +64,6 @@
 
         image_list << {:image=>@document['image_page_display'][0], :iiif => false, :alt => "Berenson 1903 Edition", :link => link }
       end
-
-
 
     %>
 
