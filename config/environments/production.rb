@@ -10,6 +10,17 @@ Rails.application.configure do
   # Rake tasks automatically ignore this option for performance.
   config.eager_load = true
 
+  config.action_mailer.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {
+    :address        => "email-smtp.us-east-1.amazonaws.com",
+    :port           => 587,
+    :authentication => :login,
+    :user_name      => ENV['ITATTI_STMP_USERNAME'],
+    :password       => ENV['ITATTI_STMP_PASSWORD'],
+    :enable_starttls_auto => true,
+    :domain         => 'itatti.harvard.edu'
+  }
+
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true

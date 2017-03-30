@@ -6,6 +6,17 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
+  config.action_mailer.delivery_method = :smtp
+  ActionMailer::Base.smtp_settings = {
+    :address        => "email-smtp.us-east-1.amazonaws.com",
+    :port           => 587,
+    :authentication => :login,
+    :user_name      => ENV['SENDGRID_USERNAME'],
+    :password       => ENV['SENDGRID_PASSWORD'],
+    :enable_starttls_auto => true,
+    :domain         => 'itatti.harvard.edu'
+  }
+
   # Do not eager load code on boot.
   config.eager_load = false
 
