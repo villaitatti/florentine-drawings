@@ -499,8 +499,6 @@ namespace :itatti do
 		end
 
 		if aatUri.include? '/entity/'
-			p '-----------------------------------'
-			p aatUri
 			triples[aatUri].each do |subTriple|
 				if !museumData.keys().include? aatUri
 					museumData[aatUri] = { :label => '', :geonames => '' }
@@ -812,7 +810,8 @@ namespace :itatti do
   		   	doc[:subtitle_t] = title
   			doc[:subtitle_display] = title
 
-  			if doc[:title_sort] == ''; doc[:title_sort] = title end
+  			if doc[:title_display] == '--'; doc[:title_display] = title end
+  			if doc[:title_sort] == '--'; doc[:title_sort] = title end
   		end
 
   		if objects.keys().include? '1961'
@@ -856,11 +855,8 @@ namespace :itatti do
 		# 	end
 		# end
 
-		# if uri == 'http://data.itatti.harvard.edu/resource/florentinedrawings/000113C-Berenson'
+		# if uri == 'http://data.itatti.harvard.edu/resource/florentinedrawings/1837E13-Berenson'
 		# 	p doc
-		# 	p images[uri]
-		# 	p objects['1938'][uri][:creators]
-		# 	p doc[:contributors_t]
 		# 	xxxxx = xxx
 		# end
 
