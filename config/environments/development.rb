@@ -11,8 +11,8 @@ Rails.application.configure do
     :address        => "email-smtp.us-east-1.amazonaws.com",
     :port           => 587,
     :authentication => :login,
-    :user_name      => ENV['SENDGRID_USERNAME'],
-    :password       => ENV['SENDGRID_PASSWORD'],
+    :user_name      => ENV['ITATTI_STMP_USERNAME'],
+    :password       => ENV['ITATTI_STMP_USERNAME'],
     :enable_starttls_auto => true,
     :domain         => 'itatti.harvard.edu'
   }
