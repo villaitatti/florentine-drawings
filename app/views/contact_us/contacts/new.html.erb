@@ -1,38 +1,48 @@
-<h2><%= t('.contact_us') %></h2>
+<div class='well well-sm' style="background-color:#f3f3f1;">
 <%= form_for @contact, :url => contacts_path, :html => {:class => 'formtastic'} do |f| %>
-  <% if ContactUs.require_name %>
-    <div class='string required' id='contact_us_contact_name_input'>
-      <%= f.label :name, (t('.name') + content_tag(:abbr, '*', :class => 'required')).html_safe %>
-      <%= f.text_field :name %>
+<legend class="text-center">Contact us</legend> 
+<div style="margin-bottom: 2rem;">Please use the form below to send us your comments or feedback.</div> 
+<% if ContactUs.require_name %>
+    <div class='string required form-group row' id='contact_us_contact_name_input'>
+      <%= f.label :name, (t('.name') + content_tag(:abbr, '*', :class => 'required')).html_safe, :class => 'col-sm-1 col-form-label' %>
+	<div class="col-sm-5">
+      <%= f.text_field :name, :class => 'form-control', :placeholder => 'Your name' %>
+	</div>
       <% if f.object.errors[:name].present? %>
         <p class='inline-error'><%= f.object.errors[:name].join(' and ') %></p>
       <% end %>
     </div>
   <% end %>
-  <div class='string required' id='contact_us_contact_email_input'>
-    <%= f.label :email, (t('.email') + content_tag(:abbr, '*', :class => 'required')).html_safe %>
-    <%= f.text_field :email %>
+  <div class='string required form-group row' id='contact_us_contact_email_input'>
+    <%= f.label :email, (t('.email') + content_tag(:abbr, '*', :class => 'required')).html_safe, :class => 'col-sm-1 col-form-label' %>
+    <div class='col-sm-5'>
+	<%= f.text_field :email, :class => 'form-control', :placeholder => 'Your email' %>
+    </div>
     <% if f.object.errors[:email].present? %>
       <p class='inline-error'><%= f.object.errors[:email].join(' and ') %></p>
     <% end %>
   </div>
   <% if ContactUs.require_subject %>
-    <div class='string required' id='contact_us_contact_subject_input'>
-      <%= f.label :subject, (t('.subject') + content_tag(:abbr, '*', :class => 'required')).html_safe %>
-      <%= f.text_field :subject %>
+    <div class='string required form-group row' id='contact_us_contact_subject_input'>
+      <%= f.label :subject, (t('.subject') + content_tag(:abbr, '*', :class => 'required')).html_safe, :class => 'col-sm-1 col-form-label' %>
+<div class='col-sm-5'>    
+  <%= f.text_field :subject, :class => 'form-control', :placeholder => 'Subject' %>
+</div>
       <% if f.object.errors[:subject].present? %>
         <p class='inline-error'><%= f.object.errors[:subject].join(' and ') %></p>
       <% end %>
     </div>
   <% end %>
-  <div class='text required' id='contact_us_contact_message_input'>
+  <div class='text required form-group' id='contact_us_contact_message_input'>
     <%= f.label :message, (t('.message') + content_tag(:abbr, '*', :class => 'required')).html_safe %>
-    <%= f.text_area :message %>
+    <%= f.text_area :message, :class => 'form-control', :placeholder => 'Please enter your message here' %>
     <% if f.object.errors[:message].present? %>
       <p class='inline-error'><%= f.object.errors[:message].join(' and ') %></p>
     <% end %>
   </div>
   <div class='commit'>
-    <%= f.submit :submit, :class => 'submit create', :title => t('.submit') %>
+    <%= f.submit :submit, :class => 'submit create btn btn-primary', :title => t('.submit') %>
   </div>
+  <div>&nbsp;</div>
 <% end %>
+</div>

@@ -15,7 +15,22 @@
  */
 
 /* change the nav and search background color */
+html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+}
+#container {
+        min-height:100%;
+        position:relative;
+}
 
+#main-container {
+        padding-bottom:120px;
+}
+.footer {
+	height:120px;
+}
 .navbar-default{
 	background-color: #f3f3f1;
 }
