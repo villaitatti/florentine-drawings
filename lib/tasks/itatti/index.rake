@@ -637,6 +637,8 @@ namespace :itatti do
 	  	doc[:technique_recto_uri] = objectsTechnique[uri][:rectoTechinqueUri]
 	  	doc[:technique_verso_t] = objectsTechnique[uri][:versoTechinque]
 	  	doc[:technique_verso_uri] = objectsTechnique[uri][:versoTechinqueUri]
+	  	doc[:has_image_i] = 0
+
 
 	  	if museumLinks.keys().include? uri
 	  		doc[:museum_url_s] = museumLinks[uri]
@@ -770,6 +772,7 @@ namespace :itatti do
 		  				doc[:image_plate_number_roman_s] = images[uri][:plate_roman]
 		  				doc[:image_thumb_display] = images[uri][:thumbnail]
 		  				doc[:image_page_display] = images[uri][:page]
+		  				doc[:has_image_i] = 1
 		  			end
 		  		end
 
