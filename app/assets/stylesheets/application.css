@@ -153,5 +153,6 @@ img:after {
 margin-top:42px;
 color:#7c2617;
 	font-size:18px;
-	font-style:italic;	
+	font-style:italic;
+	float: left;
 }
