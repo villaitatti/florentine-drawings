@@ -865,12 +865,15 @@ namespace :itatti do
 
 		# p doc
 	  	solr.add doc
-	  	solr.commit
-	  	sleep(0.025)
+
+	  	if counter % 100 == 0
+	  		solr.commit
+	  		sleep(0.025)
+	  	end
 
 
 	end
-	# solr.commit
+	solr.commit
 	# p images
 	# p images.to_json
 
