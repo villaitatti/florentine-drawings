@@ -12,11 +12,11 @@
 <div id="document" class="document <%= render_document_class %>" itemscope  itemtype="<%= @document.itemtype %>">
   <div id="doc_<%= @document.id.to_s.parameterize %>">
     <%
-      p @document
+      # p @document
       recto_label = (@document['verso_title_1961_t'][0] == '--' ? '' : 'Recto ')
 
       image_list = []
-      p "-----"
+      # p "-----"
 
       #if !@document['image_plate_display'].nil?
       #  image_list << {:image=>'/assets/temp_iiif.jpg', :alt => 'View IIIF image', :link => @document['image_plate_display'][0] }

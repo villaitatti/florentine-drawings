@@ -29,6 +29,9 @@ gem 'rest-client'
 
 gem 'contact_us', '~> 1.0.1'
 
+gem 'rmagick'
+
+gem 'aws-sdk', '~> 2'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
